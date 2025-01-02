@@ -1,0 +1,188 @@
+[
+  {
+    "id": "left-straight",
+    "description": "Left straight punch",
+    "bodyParts": [
+      "LeftArm"
+    ],
+    "order": 1,
+    "chance": 0.2,
+    "after": [
+      "right-straight",
+      "right-straight-low",
+      "right-hook",
+      "right-low-kick",
+      "right-middle-kick"
+    ],
+    "doubles": true
+  },
+  {
+    "id": "right-straight",
+    "description": "Right straight punch",
+    "bodyParts": [
+      "RightArm"
+    ],
+    "order": 1,
+    "chance": 1,
+    "after": [
+      "left-straight",
+      "left-straight-low",
+      "left-hook",
+      "left-low-kick",
+      "left-middle-kick"
+    ],
+    "doubles": true
+  },
+  {
+    "id": "left-straight-low",
+    "description": "Left straight punch - low",
+    "bodyParts": [
+      "LeftArm"
+    ],
+    "order": 1,
+    "chance": 0.1,
+    "after": [
+      "right-hook"
+    ],
+    "excludes": [ "right-straight-low" ]
+  },
+  {
+    "id": "right-straight-low",
+    "description": "Right straight punch - low",
+    "bodyParts": [
+      "RightArm"
+    ],
+    "order": 1,
+    "chance": 0.2,
+    "after": [
+      "left-straight",
+      "left-hook"
+    ],
+    "excludes": [ "left-straight-low" ]
+  },
+  {
+    "id": "left-hook",
+    "description": "Left hook punch",
+    "bodyParts": [
+      "LeftArm"
+    ],
+    "order": 1,
+    "chance": 0.2,
+    "after": [
+      "right-straight",
+      "right-hook",
+      "right-hook-body",
+      "left-hook-body",
+      "right-knee"
+    ]
+  },
+  {
+    "id": "right-hook",
+    "description": "Right hook punch",
+    "bodyParts": [
+      "RightArm"
+    ],
+    "after": [
+      "left-straight",
+      "left-hook",
+      "left-hook-body",
+      "right-hook-body",
+      "left-knee"
+    ]
+  },
+  {
+    "id": "left-hook-body",
+    "description": "Left hook punch, low",
+    "bodyParts": [
+      "LeftArm"
+    ],
+    "after": [
+      "left-straight",
+      "right-hook",
+      "left-hook",
+      "right-knee"
+    ]
+  },
+  {
+    "id": "right-hook-body",
+    "description": "Right hook punch, low",
+    "bodyParts": [
+      "RightArm"
+    ],
+    "after": [
+      "right-straight",
+      "right-hook",
+      "left-hook",
+      "left-knee"
+    ]
+  },
+  {
+    "id": "left-low-kick",
+    "description": "Left low kick",
+    "bodyParts": [
+      "LeftLeg"
+    ],
+    "after": [
+      "right-straight",
+      "right-hook"
+    ]
+  },
+  {
+    "id": "right-low-kick",
+    "description": "Right low kick",
+    "bodyParts": [
+      "RightLeg"
+    ],
+    "after": [
+      "left-straight",
+      "left-hook"
+    ]
+  },
+  {
+    "id": "left-middle-kick",
+    "description": "Left body middle kick",
+    "bodyParts": [
+      "LeftLeg"
+    ],
+    "after": [
+      "right-straight",
+      "right-hook",
+      "left-low-kick"
+    ]
+  },
+  {
+    "id": "right-middle-kick",
+    "description": "Right body middle kick",
+    "bodyParts": [
+      "RightLeg"
+    ],
+    "after": [
+      "left-hook",
+      "right-low-kick"
+    ]
+  },
+  {
+    "id": "left-knee",
+    "description": "Left knee kick",
+    "bodyParts": [
+      "LeftLeg"
+    ],
+    "after": [
+      "right-straight",
+      "right-hook",
+      "left-low-kick"
+    ]
+  },
+  {
+    "id": "right-knee",
+    "description": "Right knee kick",
+    "bodyParts": [
+      "RightLeg"
+    ],
+    "after": [
+      "left-straight",
+      "left-hook",
+      "right-low-kick"
+    ]
+  }
+]

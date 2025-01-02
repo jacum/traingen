@@ -1,0 +1,111 @@
+heavy-bag-training:
+  default-exercise-duration: 1m
+  sections:
+      - title: "Warming up 1"
+        group: split
+        exercises:
+          - type: free-punches-only
+          - type: free-punches-and-kicks
+          - type: one-two-three-opposite-punches-kicks
+          - type: four-punches-burpee
+      - title: "Warming up 2"
+        group: together
+        exercises:
+          - type: sit-ups
+          - type: push-ups
+          - type: plank
+            duration: 1m30s
+          - type: squats
+      - title: "Combo 1"
+        group: split
+        exercises:
+          - id: combo1
+            type: combo-train
+            movements:
+              - type: left-straight-punch
+              - type: right-straight-punch
+              - type: left-hook
+              - type: right-low-kick
+          - id: combo1.1
+            type: combo-train
+            extends: combo1
+            movements:
+              - type: left-hook
+              - type: right-knee
+          - id: combo1.reps
+            type: combo-reps
+            extends: combo1.1
+            sequence:
+             - type: combo
+               reps: 20
+      - title: "Filler 1"
+        group: split
+        exercises:
+          - type: composite
+            reps: 3
+            sections: 
+              - type: fast-punches
+                duration: 20s
+              - type: hard-punches  
+                duration: 20s
+      - title: "Calisthenics 1"
+        group: together
+        exercises:
+          - type: plank-shoulder-tap
+          - type: push-ups
+          - type: jump-squats
+          - type: jumping-jacks
+      - title: "Combo 2"
+        group: split
+        exercises:
+          - id: combo2
+            type: combo-train
+            movements:
+              - type: right-straight-punch
+              - type: right-hook
+              - type: left-body-punch
+          - id: combo2.1
+            type: combo-train
+            extends: combo2
+            movements:
+              - type: right-straight-punch
+              - type: left-low-kick
+          - id: combo2.reps
+            type: combo-reps
+            extends: combo2.1
+            sequence:
+              - type: combo 
+                reps: 10
+              - type: burpee
+                reps: 10
+              - type: combo
+                reps: 10
+      - title: "Calisthenics 2"
+        group: together
+        exercises:
+          - type: plank-shoulder-tap
+          - type: push-ups
+          - type: jump-squats
+          - type: jumping-jacks
+      - title: "Filler 2"
+        group: split
+        exercises:
+          - type: kicks-20-right-left
+          - type: composite
+            exercises:
+              - type: fast-punches
+                duration: 45s
+              - type: hard-punches
+                duration: 45s
+      - title: "Final"
+        group: together
+        exercises:
+         - type: burpees
+           reps: 20
+
+# Calisthenics:
+  # high knees
+  # supermans
+  # squat-hold
+  # air-kicks-left
+  # air-kicks-right

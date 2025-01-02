@@ -1,0 +1,86 @@
+openapi: 3.0.1
+info:
+  title: Training Generator API
+  description: API for trainings
+  version: 1.0.0
+
+servers:
+  - url: https://some.server.com/
+
+paths:
+
+  /user/api/combo:
+    get:
+      summary: Make combo
+      operationId: getCombo
+      responses:
+        200:
+          $ref: '#/components/responses/ComboInstance'
+
+components:
+  responses:
+    ComboInstance:
+      description: Combo instance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Combo'
+
+  schemas:
+    Combo:
+      description: A combo of movements
+      type: object
+      required:
+        - duration
+        - movements
+      properties:
+        duration:
+          type: string
+          x-scala-type: scala.concurrent.duration.FiniteDuration
+        movements:
+          description: Sequence of movements
+          type: array
+          items:
+            type: string
+
+    ComboMovement:
+      description: A movement that makes combos
+      type: object
+      required:
+        - id
+        - description
+        - type
+        - bodyParts
+        - sections
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        bodyParts:
+          type: array
+          items:
+            type: string
+            x-scala-type: nl.pragmasoft.traingen.BodyParts
+        picture:
+          type: string
+        video:
+          type: string
+        excludes:
+          type: array
+          items:
+            type: string
+        after:
+          type: array
+          items:
+            type: string
+        order:
+          type: integer
+          x-scala-type: Int
+        chance:
+          type: number
+          x-scala-type: Double
+        doubles:
+          type: boolean
+        repeats:
+          type: boolean

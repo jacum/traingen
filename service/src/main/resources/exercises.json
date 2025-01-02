@@ -1,0 +1,419 @@
+{
+  "elements": [
+    {
+      "id": "free-boxing-punches-only",
+      "description": "Free-style boxing, only punches",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "order": 1,
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "free-kickboxing-punches-and-kicks",
+      "description": "Free-style kickboxing, punches and kicks",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "order": 2,
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "fast-punches",
+      "description": "Fast punches against the bag",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "hard-punches",
+      "description": "Hard punches against the bag",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "leg-kicks",
+      "description": "Kicks with right and left leg",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "four-kicks-burpee",
+      "description": "Four kicks and then a burpee",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "Abs",
+        "Core",
+        "RightLeg",
+        "LeftLeg"
+      ],
+      "sections": [
+        "warmup",
+        "filler"
+      ]
+    },
+    {
+      "id": "jumping-jacks",
+      "description": "Jumping jacks",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "jump-squats",
+      "description": "Jump squats",
+      "bodyParts": [
+        "RightLeg",
+        "LeftLeg"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "squats",
+      "description": "Regular squats",
+      "bodyParts": [
+        "RightLeg",
+        "LeftLeg"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "push-ups",
+      "description": "Push ups",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "Core"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "side-plank",
+      "description": "Plank + side planks",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "Core"
+      ],
+      "excludes": [
+        "plank"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "sit-ups",
+      "description": "Lie on your back with your knees bent and feet flat on the floor, hip-width apart.\nPlace your hands behind your head, lightly supporting it, or cross your arms over your chest.\nEngage your core and lift your upper body toward your knees, keeping your back straight and avoiding pulling on your neck.\nLower yourself back down with control to the starting position.",
+      "bodyParts": [
+        "Abs"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "burpee",
+      "description": "Burpee exercise: 1. Stand upright with your feet shoulder-width apart.  \n2. Squat down and place your hands on the floor in front of you.  \n3. Jump your feet back into a plank position.  \n4. Perform a push-up, keeping your body straight.  \n5. Jump your feet back to the squat position.  \n6. Explosively jump into the air, reaching your arms overhead.  \n7. Land softly and repeat.  ",
+      "bodyParts": [
+        "Abs",
+        "Core",
+        "RightLeg",
+        "LeftLeg"
+      ],
+      "sections": [
+        "calisthenics",
+        "close"
+      ]
+    },
+    {
+      "id": "plank",
+      "description": "Start by lying face down on the floor.\nPlace your forearms on the ground with elbows directly under your shoulders, and keep your hands flat or clasped.\nLift your body off the floor, balancing on your forearms and toes, forming a straight line from head to heels.\nEngage your core, keep your hips level, and avoid letting your back arch or your hips sag.\nHold this position for the desired amount of time while breathing steadily.",
+      "bodyParts": [
+        "Abs",
+        "Core"
+      ],
+      "excludes": [
+        "side-planks"
+      ],
+      "sections": [
+        "calisthenics"
+      ]
+    },
+    {
+      "id": "left-straight",гьз
+      "description": "Left straight punch",
+      "type": "movement",
+      "bodyParts": [
+        "LeftArm"
+      ],
+      "order": 1,
+      "after": [
+        "left-straight",
+        "right-straight-low",
+        "right-hook",
+        "right-low-kick",
+        "right-middle-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-straight",
+      "type": "movement",
+      "description": "Right straight punch",
+      "bodyParts": [
+        "RightArm"
+      ],
+      "order": 1,
+      "after": [
+        "left-straight",
+        "left-straight-low",
+        "left-hook",
+        "left-low-kick",
+        "left-middle-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-straight-low",
+      "description": "Left straight punch - low",
+      "type": "movement",
+      "bodyParts": [
+        "LeftArm"
+      ],
+      "order": 1,
+      "after": [
+        "right-hook"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-straight-low",
+      "type": "movement",
+      "description": "Right straight punch - low",
+      "bodyParts": [
+        "RightArm"
+      ],
+      "order": 1,
+      "after": [
+        "left-straight",
+        "left-hook"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-hook",
+      "description": "Left hook punch",
+      "type": "movement",
+      "bodyParts": [
+        "LeftArm"
+      ],
+      "order": 1,
+      "after": [
+        "left-straight",
+        "right-hook",
+        "right-hook-body",
+        "left-hook",
+        "left-hook-body",
+        "right-knee"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-hook",
+      "description": "Right hook punch",
+      "type": "movement",
+      "bodyParts": [
+        "RightArm"
+      ],
+      "after": [
+        "left-straight",
+        "right-hook",
+        "right-hook-body",
+        "left-hook",
+        "left-hook-body",
+        "left-knee"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-hook-body",
+      "description": "Left hook punch, low",
+      "type": "movement",
+      "bodyParts": [
+        "LeftArm"
+      ],
+      "after": [
+        "left-straight",
+        "right-hook",
+        "left-hook",
+        "right-knee"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-hook-body",
+      "description": "Right hook punch, low",
+      "type": "movement",
+      "bodyParts": [
+        "RightArm"
+      ],
+      "after": [
+        "right-straight",
+        "right-hook",
+        "left-hook",
+        "left-knee"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-low-kick",
+      "description": "Left kick, low",
+      "type": "movement",
+      "bodyParts": [
+        "LeftLeg"
+      ],
+      "after": [
+        "left-straight",
+        "left-hook",
+        "left-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-low-kick",
+      "description": "Right kick, low",
+      "type": "movement",
+      "bodyParts": [
+        "RightLeg"
+      ],
+      "after": [
+        "left-straight",
+        "left-hook",
+        "right-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-middle-kick",
+      "description": "Left kick, middle",
+      "type": "movement",
+      "bodyParts": [
+        "LeftLeg"
+      ],
+      "after": [
+        "right-straight",
+        "right-hook",
+        "left-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-middle-kick",
+      "description": "Right kick, middle",
+      "type": "movement",
+      "bodyParts": [
+        "RightLeg"
+      ],
+      "after": [
+        "left-hook",
+        "right-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "left-knee",
+      "description": "Left knee kick",
+      "type": "movement",
+      "bodyParts": [
+        "LeftLeg"
+      ],
+      "after": [
+        "right-straight",
+        "right-hook",
+        "left-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    },
+    {
+      "id": "right-knee",
+      "description": "Right knee kick",
+      "type": "movement",
+      "bodyParts": [
+        "RightLeg"
+      ],
+      "after": [
+        "left-straight",
+        "left-hook",
+        "right-low-kick"
+      ],
+      "sections": [
+        "combo"
+      ]
+    }
+  ]
+}
