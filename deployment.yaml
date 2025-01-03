@@ -34,12 +34,12 @@ spec:
         - name: app
           imagePullPolicy: Always
           image: eblovich/traingen-service:${APP_VERSION}
-          env:
-            - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: traingen
-                  key: DATABASE_PASSWORD
+#          env:
+#            - name: DATABASE_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: traingen
+#                  key: DATABASE_PASSWORD
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
@@ -97,11 +97,11 @@ spec:
     - hosts:
         - traingen.jacum.com
       secretName:  traingen-tls
----
-kind: Secret
-apiVersion: v1
-metadata:
-  name: traingen
-stringData:
-  DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-type: Opaque
+#---
+#kind: Secret
+#apiVersion: v1
+#metadata:
+#  name: traingen
+#stringData:
+#  DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+#type: Opaque

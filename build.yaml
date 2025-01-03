@@ -56,5 +56,5 @@ steps:
       targetType: 'inline'
       script: |
         export APP_VERSION=$(Build.BuildNumber)
-        export DATABASE_PASSWORD=$(DATABASE_PASSWORD)
+        # export DATABASE_PASSWORD=$(DATABASE_PASSWORD) 
         cat deployment.yaml | envsubst | kubectl apply -f -

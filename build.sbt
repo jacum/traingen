@@ -13,6 +13,7 @@ lazy val service = (project in file("service"))
   .enablePlugins(WartRemover, GuardrailPlugin, JavaAppPackaging, DockerPlugin)
   .settings(
     dockerExposedPorts ++= Seq(8080),
+    dockerBaseImage := "ubi9/openjdk-21",
     Compile / compile / wartremoverErrors ++= Warts.allBut(wartExclusionsMain *),
     Compile / test / wartremoverErrors ++= Warts.allBut(wartExclusionsTest *),
     Compile / scalacOptions ++= Seq(
