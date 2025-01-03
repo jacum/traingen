@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "openapi": "yq <../openapi/user-api.yaml  -o=json -P >src/services/user-api.json; npx openapi-typescript src/services/user-api.json --output src/services/user-api.ts",
+    "openapi": "mkdir -p ./src/services && yq <../openapi/user-api.yaml  -o=json -P >./src/services/user-api.json && npx openapi-typescript src/services/user-api.json --output src/services/user-api.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
