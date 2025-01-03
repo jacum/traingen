@@ -47,7 +47,7 @@ steps:
       repository: eblovich/traingen-service
       command: buildAndPush
       addPipelineData: false
-      dockerfile: '$(Build.SourcesDirectory)/target/docker/stage/Dockerfile'
+      dockerfile: '$(Build.SourcesDirectory)/service/target/docker/stage/Dockerfile'
       tags: $(Build.BuildNumber)
 
   - task: Bash@3
