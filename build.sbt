@@ -12,8 +12,8 @@ lazy val root = project.in(file(".")).aggregate(service)
 lazy val service = (project in file("service"))
   .enablePlugins(WartRemover, GuardrailPlugin, JavaAppPackaging, DockerPlugin)
   .settings(
-    dockerExposedPorts ++= Seq(8080),
-    dockerBaseImage := "openjdk:21",
+    dockerExposedPorts ++= Seq(8081),
+    dockerBaseImage := "ghcr.io/graalvm/jdk-community:23",
     Compile / compile / wartremoverErrors ++= Warts.allBut(wartExclusionsMain *),
     Compile / test / wartremoverErrors ++= Warts.allBut(wartExclusionsTest *),
     Compile / scalacOptions ++= Seq(
