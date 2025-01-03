@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traingen
+  labels:
+    uri: traingen.jacum.com
+spec:
+  selector:
+    matchLabels:
+      uri: traingen.jacum.com
+  template:
+    metadata:
+      labels:
+        uri: traingen.jacum.com
+    spec:
+      containers:
+        - name: http
+          imagePullPolicy: Always
+          image: eblovich/traingen-http:${APP_VERSION}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10002
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 64Mi
+          volumeMounts:
+            - mountPath: /var/cache/nginx
+              name: cache-http
+        - name: app
+          imagePullPolicy: Always
+          image: eblovich/traingen-service:${APP_VERSION}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: traingen
+                  key: DATABASE_PASSWORD
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10002
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: 1G
+            requests:
+              memory: 512Mi
+      volumes:
+        - name: cache
+          emptyDir: {}
+        - name: cache-http
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traingen-service
+spec:
+  selector:
+    uri: traingen.jacum.com
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      targetPort: 8080
+      port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traingen-ingress
+  labels:
+    uri: traingen.jacum.com
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "True"
+spec:
+  rules:
+    - host: traingen.jacum.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: traingen-service
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - traingen.jacum.com
+      secretName:  traingen-tls
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: traingen
+stringData:
+  DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+type: Opaque

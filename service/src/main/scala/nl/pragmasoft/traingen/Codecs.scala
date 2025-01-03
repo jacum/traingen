@@ -44,8 +44,8 @@ object Codecs:
     val mapping = elemInstances.zip(elemNames).toMap
     Encoder[String].contramap[T](mapping.apply)
 
-  given Encoder[BodyParts] = stringEnumEncoder
-  given Decoder[BodyParts] = stringEnumDecoder
+  given Encoder[BodyPart] = stringEnumEncoder
+  given Decoder[BodyPart] = stringEnumDecoder
 
   given Encoder[ElementType] = stringEnumEncoder
   given Decoder[ElementType] = stringEnumDecoder

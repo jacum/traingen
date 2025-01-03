@@ -4,6 +4,7 @@ import cats.data.OptionT
 import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s.{Port, ipv4, port}
 import nl.pragmasoft.traingen.http.Resource
+import nl.pragmasoft.traingen.http.definitions.ComboMovement
 import org.http4s.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
@@ -27,7 +28,9 @@ object Main extends IOApp:
           .log(
             Router(
               "/" -> new Resource[IO]().routes(
-                new ComboGenerator[IO] // <+>
+                new ComboGenerator[IO]:
+                  override val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
+                // <+>
               )
             ),
             messageFailureLogAction = errorHandler,

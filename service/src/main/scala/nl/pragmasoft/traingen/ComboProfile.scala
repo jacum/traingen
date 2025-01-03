@@ -9,11 +9,11 @@ case class ComboProfile(
     buildUpLength: Int,
     movementsMin: Int,
     movementsMax: Int,
-    armMovementDuration: FiniteDuration,
-    legMovementDuration: FiniteDuration,
-    chanceOfDouble: Double
+    transitionDuration: (BodyPart, BodyPart) => FiniteDuration,
+    doublesMax: Int,
+    oneSideMovementsMax: Int
 )
 
 object ComboProfile:
   val Default: ComboProfile =
-    ComboProfile(2, 6, 8, 500 millis, 800 millis, 0.1)
+    ComboProfile(2, 6, 8, BodyPart.DefaultTransitionDuration, 1, 2)

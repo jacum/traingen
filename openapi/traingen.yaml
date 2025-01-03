@@ -72,7 +72,7 @@ components:
           type: array
           items:
             type: string
-            x-scala-type: nl.pragmasoft.traingen.BodyParts
+            x-scala-type: nl.pragmasoft.traingen.BodyPart
         picture:
           type: string
         video:

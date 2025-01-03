@@ -50,37 +50,36 @@ components:
         - id
         - description
         - type
-        - bodyParts
-        - sections
+        - bodyPart
+        - after
       properties:
         id:
           type: string
         description:
           type: string
-        bodyParts:
-          type: array
-          items:
-            type: string
-            x-scala-type: nl.pragmasoft.traingen.BodyParts
+        bodyPart:
+          type: string
+          x-scala-type: nl.pragmasoft.traingen.BodyPart
         picture:
           type: string
         video:
           type: string
+        after:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComboMovementChance'
         excludes:
           type: array
           items:
             type: string
-        after:
-          type: array
-          items:
-            type: string
-        order:
-          type: integer
-          x-scala-type: Int
+
+    ComboMovementChance:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
         chance:
           type: number
           x-scala-type: Double
-        doubles:
-          type: boolean
-        repeats:
-          type: boolean
