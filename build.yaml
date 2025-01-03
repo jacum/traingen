@@ -18,8 +18,8 @@ steps:
       script: |
         kubectl cluster-info
         cd $(Build.SourcesDirectory)/frontend
-        yq <../openapi/user-api.yaml  -o=json -P >src/services/user-api.json
         npm i
+        npm run openapi
         npm run build
 
   - task: Docker@2
