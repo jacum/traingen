@@ -13,6 +13,7 @@ lazy val service = (project in file("service"))
   .enablePlugins(GraalVMNativeImagePlugin)
   .enablePlugins(WartRemover, GuardrailPlugin, JavaAppPackaging, DockerPlugin)
   .settings(
+    GraalVMNativeImage / target := target.value / "docker/stage/4/opt/docker/bin",
     dockerExposedPorts ++= Seq(8081),
     dockerBaseImage := "ghcr.io/graalvm/jdk-community:23",
     Compile / mainClass := Some("nl.pragmasoft.traingen.Main"),
