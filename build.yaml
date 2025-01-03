@@ -7,8 +7,8 @@ trigger:
 
 pool: 'hetzner04'
 
-variables:
-  - group: traingen-secrets
+#variables:
+#  - group: traingen-secrets
 
 steps:
   - task: Bash@3
