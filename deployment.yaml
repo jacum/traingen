@@ -92,7 +92,7 @@ spec:
               service:
                 name: traingen-service
                 port:
-                  number: 8081
+                  number: 8080
   tls:
     - hosts:
         - traingen.jacum.com
