@@ -37,6 +37,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
+        echo docker run -u 1000:1002 -i --log-driver=none -a stdin -a stdout -a stderr -e COURSIER_CACHE=/cache/coursier  -v /usr/bin/docker:/sbin/docker -v /var/run/docker.sock:/var/run/docker.sock -v $(Build.SourcesDirectory):/root -v /data/cache/agent:/cache --rm sbtscala/scala-sbt:graalvm-community-22.0.1_1.10.7_3.6.2 sbt -Dsbt.global.base=/cache/.sbt -Dsbt.boot.directory=/cache/.sbt -Divy.home=/cache/.ivy2 -Dsbt.ivy.home=/cache/.ivy2 compile Docker/stage
         docker run -u 1000:1002 -i --log-driver=none -a stdin -a stdout -a stderr -e COURSIER_CACHE=/cache/coursier  -v /usr/bin/docker:/sbin/docker -v /var/run/docker.sock:/var/run/docker.sock -v $(Build.SourcesDirectory):/root -v /data/cache/agent:/cache --rm sbtscala/scala-sbt:graalvm-community-22.0.1_1.10.7_3.6.2 sbt -Dsbt.global.base=/cache/.sbt -Dsbt.boot.directory=/cache/.sbt -Divy.home=/cache/.ivy2 -Dsbt.ivy.home=/cache/.ivy2 compile Docker/stage
 
   - task: Docker@2

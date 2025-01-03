@@ -10,7 +10,9 @@ lazy val root = project.in(file(".")).aggregate(service)
   .settings(name := "training-generator-root")
 
 lazy val service = (project in file("service"))
-  .enablePlugins(WartRemover, GuardrailPlugin).settings(
+  .enablePlugins(WartRemover, GuardrailPlugin, JavaAppPackaging, DockerPlugin)
+  .settings(
+    dockerExposedPorts ++= Seq(8080),
     Compile / compile / wartremoverErrors ++= Warts.allBut(wartExclusionsMain *),
     Compile / test / wartremoverErrors ++= Warts.allBut(wartExclusionsTest *),
     Compile / scalacOptions ++= Seq(
@@ -21,6 +23,10 @@ lazy val service = (project in file("service"))
       "-language:postfixOps",
       s"-P:wartremover:excluded:${sourceManaged.value.asFile.getPath}",
     ),
+    doc / sources := Seq(),
+    packageDoc / publishArtifact := false,
+    packageSrc / publishArtifact := false,
+    ThisBuild / parallelExecution := false,
     libraryDependencies ++= Seq(
       "org.http4s" %% "http4s-ember-server" % Http4sVersion,
       "org.http4s" %% "http4s-dsl" % Http4sVersion,
