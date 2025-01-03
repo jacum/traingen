@@ -1,35 +1,38 @@
-
 {
-  "name": "my-app",
+  "name": "vite-project",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "openapi": "yq <../openapi/user-api.yaml  -o=json -P >src/services/user-api.json; npx openapi-typescript src/services/user-api.json --output src/services/user-api.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.62.11",
+    "@tanstack/react-query-devtools": "^5.62.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.5",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
-    "autoprefixer": "^10.4.20",
-    "axios": "^1.7.9",
+    "openapi-fetch": "^0.13.3",
+    "openapi-typescript": "^7.4.4",
     "postcss": "^8.4.49",
-    "openapi-typescript-fetch": "^2.0.0",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2",
+    "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.7"
   }
 }

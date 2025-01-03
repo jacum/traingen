@@ -5,17 +5,25 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://some.server.com/
+  - url: http://localhost:8080/
 
 paths:
 
-  /user/api/combo:
+  /user/api/combo/make:
     get:
       summary: Make combo
       operationId: getCombo
       responses:
         200:
           $ref: '#/components/responses/ComboInstance'
+
+  /user/api/combo/movements:
+    get:
+      summary: Make combo
+      operationId: getMovements
+      responses:
+        200:
+          $ref: '#/components/responses/ComboMovements'
 
 components:
   responses:
@@ -24,10 +32,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Combo'
+            $ref: '#/components/schemas/ComboInstance'
 
+    ComboMovements:
+      description: Combo movements
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ComboMovement'
   schemas:
-    Combo:
+    ComboInstance:
       description: A combo of movements
       type: object
       required:
@@ -41,7 +57,24 @@ components:
           description: Sequence of movements
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ComboMovementInstance'
+
+    ComboMovementInstance:
+      description: A movement used in combo
+      type: object
+      required:
+        - id
+        - description
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        picture:
+          type: string
+        video:
+          type: string
+
 
     ComboMovement:
       description: A movement that makes combos

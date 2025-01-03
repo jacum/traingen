@@ -8,11 +8,9 @@ import nl.pragmasoft.traingen.http.definitions.ComboMovement
 import org.http4s.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.middleware.Logger
+import org.http4s.server.middleware.{CORS, ErrorAction, ErrorHandling, Logger}
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.slf4j.Slf4jFactory
-import org.http4s.server.middleware.ErrorAction
-import org.http4s.server.middleware.ErrorHandling
 
 object Main extends IOApp:
 
@@ -43,7 +41,10 @@ object Main extends IOApp:
     .default[IO]
     .withHost(ipv4"0.0.0.0")
     .withPort(port"8080")
-    .withHttpApp(httpApp)
+    .withHttpApp(
+      CORS.policy
+        .withAllowOriginAll(httpApp)
+    )
     .build
 
   def run(args: List[String]): IO[ExitCode] = server

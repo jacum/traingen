@@ -18,7 +18,7 @@ steps:
       script: |
         kubectl cluster-info
         cd $(Build.SourcesDirectory)/frontend
-        ./yaml-to-json.sh <../openapi/user-api.yaml >./services/openapi.json 
+        yq <../openapi/user-api.yaml  -o=json -P >src/services/user-api.json
         npm i
         npm run build
 

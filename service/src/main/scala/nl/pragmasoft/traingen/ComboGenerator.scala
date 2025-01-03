@@ -1,21 +1,24 @@
 package nl.pragmasoft.traingen
 
 import cats.Applicative
+import cats.implicits.catsSyntaxEq
 import cats.syntax.applicative.*
-import nl.pragmasoft.traingen.http.definitions.{Combo, ComboMovement, ComboMovementChance}
+import nl.pragmasoft.traingen.RandomUtils.*
+import nl.pragmasoft.traingen.http.definitions.{ComboInstance, ComboMovement, ComboMovementChance, ComboMovementInstance}
 import nl.pragmasoft.traingen.http.{Handler, Resource}
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.*
 import scala.util.Random
-import RandomUtils.*
-import cats.implicits.catsSyntaxEq
 
 object ComboGenerator:
-  val StartExercise = "<start>"
+  val StartExercise = "_start_"
 
 abstract class ComboGenerator[F[_]: Applicative] extends Handler[F]:
   import ComboGenerator.*
+
+  def getMovements(respond: Resource.GetMovementsResponse.type)(): F[Resource.GetMovementsResponse] =
+    respond.Ok(allMovements).pure[F]
 
   def getCombo(respond: Resource.GetComboResponse.type)(): F[Resource.GetComboResponse] =
     respond
@@ -26,7 +29,7 @@ abstract class ComboGenerator[F[_]: Applicative] extends Handler[F]:
 
   lazy val comboMovementsMap: Map[String, ComboMovement] = allMovements.map(e => e.id -> e).toMap
 
-  def generateCombo(profile: ComboProfile): Combo =
+  def generateCombo(profile: ComboProfile): ComboInstance =
 
     val movementsAfter: Map[String, Vector[ComboMovementChance]] =
       allMovements
@@ -102,7 +105,9 @@ abstract class ComboGenerator[F[_]: Applicative] extends Handler[F]:
 
     val allCombo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
 
-    Combo(
+    ComboInstance(
       calculateDuration[ComboMovement](allCombo, (m1, m2) => profile.transitionDuration(m1.bodyPart, m2.bodyPart)),
-      allCombo.map(_.id)
+      allCombo.map(m => 
+        ComboMovementInstance(m.id, m.description, m.picture, m.video)
+      )
     )

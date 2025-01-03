@@ -1,34 +1,52 @@
-import React, { useEffect, useState } from "react";
-  import fetcher from "./services/api";
-  import Table from "./components/Table";
+import './App.css'
 
-  const App: React.FC = () => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+import { paths } from './services/user-api.ts'
+import createClient from "openapi-fetch";
+import {
+    QueryClient,
+    QueryClientProvider,
+    useQuery,
+} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-  const api = await fetcher(); // Instantiate fetcher with spec
-  const response = await api.getData(); // Replace with actual endpoint
-  setData(response);
-  } catch (error) {
-  console.error("Error fetching data", error);
-  } finally {
-  setLoading(false);
-  }
-  };
-  fetchData();
-  }, []);
+const queryClient = new QueryClient()
 
-  if (loading) return <div className="text-center">Loading...</div>;
+export default function App() {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools />
+            <Combo />
+        </QueryClientProvider>
+    )
+}
 
-  return (
-<div className="container mx-auto mt-5">
-<h1 className="text-2xl font-bold mb-4">Data Table</h1>
-<Table data={data} />
-</div>
-  );
-  };
+const client = createClient<paths>({ baseUrl:  "" });
 
-  export default App;
+function Combo() {
+    const {isPending, error, data, isFetching} = useQuery({
+        queryKey: ['repoData'],
+        queryFn: async () => await client.GET("/user/api/combo/make", {
+            params: {},
+        }),
+    })
+
+    if (isPending || isFetching) return 'Loading...'
+
+    if (error) return 'An error has occurred: ' + error.message
+
+    return (<table>
+        <thead>
+        <tr>
+            <th>Combo</th>
+        </tr>
+        </thead>
+        <tbody key="movements">
+        {data.data?.movements.map( (m, i) =>
+                <tr key={i}>
+                    <td key={i}>{m.description}</td>
+                </tr>
+        )}
+    </tbody>
+</table>)
+}
+
