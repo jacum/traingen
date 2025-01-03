@@ -10,10 +10,12 @@ lazy val root = project.in(file(".")).aggregate(service)
   .settings(name := "training-generator-root")
 
 lazy val service = (project in file("service"))
+  .enablePlugins(GraalVMNativeImagePlugin)
   .enablePlugins(WartRemover, GuardrailPlugin, JavaAppPackaging, DockerPlugin)
   .settings(
     dockerExposedPorts ++= Seq(8081),
     dockerBaseImage := "ghcr.io/graalvm/jdk-community:23",
+    Compile / mainClass := Some("nl.pragmasoft.traingen.Main"),
     Compile / compile / wartremoverErrors ++= Warts.allBut(wartExclusionsMain *),
     Compile / test / wartremoverErrors ++= Warts.allBut(wartExclusionsTest *),
     Compile / scalacOptions ++= Seq(
