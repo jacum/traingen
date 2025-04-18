@@ -41,14 +41,7 @@ lazy val service = (project in file("service"))
       "org.slf4j" % "slf4j-simple" % "2.0.9", // Simple SLF4J implementation
       "org.scalatest" %% "scalatest" % "3.2.16" % Test,
     ),
-    Compile / guardrailTasks := List(/*ScalaServer(
-      file("openapi/traingen.yaml"),
-      framework = "http4s",
-      pkg = "nl.pragmasoft.traingen.http",
-      imports = List("nl.pragmasoft.traingen.Codecs.given"),
-      encodeOptionalAs = codingOptional,
-      decodeOptionalAs = codingOptional,
-    ),*/
+    Compile / guardrailTasks := List(
       ScalaServer(
         file("openapi/user-api.yaml"),
         framework = "http4s",

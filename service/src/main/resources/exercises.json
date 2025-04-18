@@ -9,8 +9,8 @@
       ],
       "order": 1,
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -24,8 +24,8 @@
       ],
       "order": 2,
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -36,8 +36,8 @@
         "RightArm"
       ],
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -48,8 +48,8 @@
         "RightArm"
       ],
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -60,8 +60,8 @@
         "RightLeg"
       ],
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -76,8 +76,8 @@
         "LeftLeg"
       ],
       "sections": [
-        "warmup",
-        "filler"
+        "Warmup",
+        "Filler"
       ]
     },
     {
@@ -88,7 +88,7 @@
         "RightArm"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -99,7 +99,7 @@
         "LeftLeg"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -110,7 +110,7 @@
         "LeftLeg"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -122,7 +122,7 @@
         "Core"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -137,7 +137,7 @@
         "plank"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -147,7 +147,7 @@
         "Abs"
       ],
       "sections": [
-        "calisthenics"
+        "Calisthenics"
       ]
     },
     {
@@ -160,8 +160,8 @@
         "LeftLeg"
       ],
       "sections": [
-        "calisthenics",
-        "close"
+        "Calisthenics",
+        "Close"
       ]
     },
     {
@@ -175,244 +175,7 @@
         "side-planks"
       ],
       "sections": [
-        "calisthenics"
-      ]
-    },
-    {
-      "id": "left-straight",гьз
-      "description": "Left straight punch",
-      "type": "movement",
-      "bodyParts": [
-        "LeftArm"
-      ],
-      "order": 1,
-      "after": [
-        "left-straight",
-        "right-straight-low",
-        "right-hook",
-        "right-low-kick",
-        "right-middle-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-straight",
-      "type": "movement",
-      "description": "Right straight punch",
-      "bodyParts": [
-        "RightArm"
-      ],
-      "order": 1,
-      "after": [
-        "left-straight",
-        "left-straight-low",
-        "left-hook",
-        "left-low-kick",
-        "left-middle-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-straight-low",
-      "description": "Left straight punch - low",
-      "type": "movement",
-      "bodyParts": [
-        "LeftArm"
-      ],
-      "order": 1,
-      "after": [
-        "right-hook"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-straight-low",
-      "type": "movement",
-      "description": "Right straight punch - low",
-      "bodyParts": [
-        "RightArm"
-      ],
-      "order": 1,
-      "after": [
-        "left-straight",
-        "left-hook"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-hook",
-      "description": "Left hook punch",
-      "type": "movement",
-      "bodyParts": [
-        "LeftArm"
-      ],
-      "order": 1,
-      "after": [
-        "left-straight",
-        "right-hook",
-        "right-hook-body",
-        "left-hook",
-        "left-hook-body",
-        "right-knee"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-hook",
-      "description": "Right hook punch",
-      "type": "movement",
-      "bodyParts": [
-        "RightArm"
-      ],
-      "after": [
-        "left-straight",
-        "right-hook",
-        "right-hook-body",
-        "left-hook",
-        "left-hook-body",
-        "left-knee"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-hook-body",
-      "description": "Left hook punch, low",
-      "type": "movement",
-      "bodyParts": [
-        "LeftArm"
-      ],
-      "after": [
-        "left-straight",
-        "right-hook",
-        "left-hook",
-        "right-knee"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-hook-body",
-      "description": "Right hook punch, low",
-      "type": "movement",
-      "bodyParts": [
-        "RightArm"
-      ],
-      "after": [
-        "right-straight",
-        "right-hook",
-        "left-hook",
-        "left-knee"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-low-kick",
-      "description": "Left kick, low",
-      "type": "movement",
-      "bodyParts": [
-        "LeftLeg"
-      ],
-      "after": [
-        "left-straight",
-        "left-hook",
-        "left-low-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-low-kick",
-      "description": "Right kick, low",
-      "type": "movement",
-      "bodyParts": [
-        "RightLeg"
-      ],
-      "after": [
-        "left-straight",
-        "left-hook",
-        "right-low-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-middle-kick",
-      "description": "Left kick, middle",
-      "type": "movement",
-      "bodyParts": [
-        "LeftLeg"
-      ],
-      "after": [
-        "right-straight",
-        "right-hook",
-        "left-low-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-middle-kick",
-      "description": "Right kick, middle",
-      "type": "movement",
-      "bodyParts": [
-        "RightLeg"
-      ],
-      "after": [
-        "left-hook",
-        "right-low-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "left-knee",
-      "description": "Left knee kick",
-      "type": "movement",
-      "bodyParts": [
-        "LeftLeg"
-      ],
-      "after": [
-        "right-straight",
-        "right-hook",
-        "left-low-kick"
-      ],
-      "sections": [
-        "combo"
-      ]
-    },
-    {
-      "id": "right-knee",
-      "description": "Right knee kick",
-      "type": "movement",
-      "bodyParts": [
-        "RightLeg"
-      ],
-      "after": [
-        "left-straight",
-        "left-hook",
-        "right-low-kick"
-      ],
-      "sections": [
-        "combo"
+        "Calisthenics"
       ]
     }
   ]

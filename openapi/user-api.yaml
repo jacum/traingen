@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:8081/
+  - url: http://localhost:8080/
 
 paths:
 
@@ -25,8 +25,39 @@ paths:
         200:
           $ref: '#/components/responses/ComboMovements'
 
+  /user/api/training:
+    get:
+      summary: Get training schema
+      operationId: getTraining
+      responses:
+        200:
+          $ref: '#/components/responses/TrainingInstance'
+
+  /user/api/library:
+    get:
+      summary: Get training schema
+      operationId: getLibrary
+      responses:
+        200:
+          $ref: '#/components/responses/ExerciseLibrary'
+
 components:
   responses:
+
+    TrainingInstance:
+      description: Training instance
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Training'
+
+    ExerciseLibrary:
+      description: Exercise library
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Library'
+
     ComboInstance:
       description: Combo instance
       content:
@@ -116,3 +147,147 @@ components:
         chance:
           type: number
           x-scala-type: Double
+
+    Library:
+      type: object
+      required:
+        - elements
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+
+    Element:
+      type: object
+      required:
+        - id
+        - description
+        - bodyParts
+        - sections
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        bodyParts:
+          type: array
+          items:
+            type: string
+            x-scala-type: nl.pragmasoft.traingen.BodyPart
+        picture:
+          type: string
+        video:
+          type: string
+        sections:
+          type: array
+          items:
+            type: string
+            x-scala-type: nl.pragmasoft.traingen.SectionType
+        composes:
+          type: array
+          items:
+            type: string
+        excludes:
+          type: array
+          items:
+            type: string
+        order:
+          type: integer
+          x-scala-type: Int
+        after:
+          type: array
+          items:
+            type: string
+    Training:
+      type: object
+      required:
+        - sections
+        - duration
+      properties:
+        duration:
+          type: string
+          x-scala-type: scala.concurrent.duration.FiniteDuration
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingSection'
+    TrainingSection:
+      type: object
+      required:
+        - title
+        - type
+        - group
+        - duration
+        - exercises
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+          x-scala-type: nl.pragmasoft.traingen.SectionType
+        group:
+          type: string
+          x-scala-type: nl.pragmasoft.traingen.GroupType
+        duration:
+          type: string
+          x-scala-type: scala.concurrent.duration.FiniteDuration
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+    Exercise:
+      type: object
+      required:
+        - kind
+        - ref
+      properties:
+        kind:
+          description: Class of an exercise - simple, combo etc.
+          type: string
+        ref:
+          description: Reference to library with detailed description
+          type: string
+        duration:
+          description: Duration of exercise
+          type: string
+          x-scala-type: scala.concurrent.duration.FiniteDuration
+        reps:
+          description: Number of repetitions
+          type: integer
+          x-scala-type: Int
+      discriminator:
+        propertyName: kind
+        mapping:
+          simple: SimpleExercise
+          composite: CompositeExercise
+    SimpleExercise:
+      description: A simple unit of exercise
+      allOf:
+        - $ref: '#/components/schemas/Exercise'
+        - type: object
+    CompositeExercise:
+      description: A composition of other exercises
+      allOf:
+        - $ref: '#/components/schemas/Exercise'
+        - type: object
+          required:
+            - exercises
+          properties:
+            exercises:
+              type: array
+              items:
+                $ref: '#/components/schemas/Exercise'
+
+    ComboExercise:
+      description: Combo of punches, kicks and knees
+      allOf:
+        - $ref: '#/components/schemas/Exercise'
+        - type: object
+          required:
+            - movements
+          properties:
+            movements:
+              type: array
+              items:
+                $ref: '#/components/schemas/ComboMovementInstance'

@@ -4,7 +4,7 @@ import cats.data.OptionT
 import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s.{Port, ipv4, port}
 import nl.pragmasoft.traingen.http.Resource
-import nl.pragmasoft.traingen.http.definitions.ComboMovement
+import nl.pragmasoft.traingen.http.definitions.{ComboMovement, Library}
 import org.http4s.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
@@ -16,6 +16,10 @@ object Main extends IOApp:
 
   implicit val loggerFactory: LoggerFactory[IO] = Slf4jFactory.create
 
+  private val comboGenerator = new Generator[IO]:
+    override val availableElements: Library = LibraryLoader.load("exercises.json")
+    override val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
+
   private val httpApp: HttpApp[IO] =
     def errorHandler(t: Throwable, msg: => String): OptionT[IO, Unit] =
       OptionT.liftF(IO.println(t) >> IO(t.printStackTrace()))
@@ -25,11 +29,7 @@ object Main extends IOApp:
         ErrorAction
           .log(
             Router(
-              "/" -> new Resource[IO]().routes(
-                new ComboGenerator[IO]:
-                  override val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
-                // <+>
-              )
+              "/" -> new Resource[IO]().routes(comboGenerator)
             ),
             messageFailureLogAction = errorHandler,
             serviceErrorLogAction = errorHandler
@@ -40,7 +40,7 @@ object Main extends IOApp:
   private val server = EmberServerBuilder
     .default[IO]
     .withHost(ipv4"0.0.0.0")
-    .withPort(port"8081")
+    .withPort(port"8080")
     .withHttpApp(
       CORS.policy
         .withAllowOriginAll(httpApp)
