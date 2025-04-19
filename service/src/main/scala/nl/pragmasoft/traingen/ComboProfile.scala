@@ -7,8 +7,7 @@ import scala.language.postfixOps
 
 case class ComboProfile(
     buildUpLength: Int,
-    movementsMin: Int,
-    movementsMax: Int,
+    movements: Int,
     transitionDuration: (BodyPart, BodyPart) => FiniteDuration,
     doublesMax: Int,
     oneSideMovementsMax: Int
@@ -16,4 +15,4 @@ case class ComboProfile(
 
 object ComboProfile:
   val Default: ComboProfile =
-    ComboProfile(4, 4, 8, BodyPart.DefaultTransitionDuration, 1, 2)
+    ComboProfile(3, 6, BodyPart.DefaultTransitionDuration, 1, 2)

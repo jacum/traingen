@@ -39,7 +39,8 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       val comboParts =
         split(allCombo.movements, profile.comboProfile.buildUpLength)
           .foldLeft(Vector.empty[Vector[ComboMovementInstance]]) { (acc, curr) =>
-            acc :+ (acc.lastOption.getOrElse(Vector.empty) ++ curr)
+            if curr.isEmpty then acc
+            else acc :+ (acc.lastOption.getOrElse(Vector.empty) ++ curr)
           }
 
       comboParts.map { ms =>
@@ -229,9 +230,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
     // crude integrity check
     allMovements.map(_.id).foreach(k => assert(movementsAfter.contains(k), s"$k has no 'after' movements"))
-
-    val comboLength = between(profile.movementsMin, profile.movementsMax)
-
+    
     @SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
     def calculateDuration[A](s: Vector[A], duration: (A, A) => FiniteDuration): FiniteDuration =
       s.sliding(2).foldLeft(0.seconds) { (acc, pair) =>
@@ -261,7 +260,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
             .getOrElse(0.0)
         )
 
-      if acc.sizeIs == comboLength then acc
+      if acc.sizeIs == profile.movements then acc
       else
         val last = acc.last
         pickMovements(

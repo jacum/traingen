@@ -89,6 +89,40 @@
       ]
     },
     {
+      "id": "leg-kicks-20-tines",
+      "description": "Kicks with right and left leg, 20 times",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "Filler"
+      ]
+    },
+    {
+      "id": "hard-punches-pushups",
+      "description": "Punches and then pushups",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "Filler"
+      ]
+    },
+    {
+      "id": "knees-on-the-bag-high-knees",
+      "description": "Knees on the bag and the high knees, 2 series ",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "Warmup",
+        "Filler"
+      ]
+    },
+    {
       "id": "four-kicks-burpee",
       "description": "Four kicks and then a burpee",
       "bodyParts": [
