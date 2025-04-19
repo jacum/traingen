@@ -184,7 +184,6 @@
         "LeftLeg"
       ],
       "sections": [
-        "Calisthenics",
         "Close"
       ]
     },
@@ -220,6 +219,20 @@
         "LeftArm",
         "RightArm",
         "Core"
+      ],
+      "sections": [
+        "Filler",
+        "Close"
+      ]
+    },
+    {
+      "id": "free-kickboxing-punches-and-kicks-elbows-knees",
+      "description": "Free-style kickboxing, punches and kicks, elbows knees",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "LeftLeg",
+        "RightLeg"
       ],
       "sections": [
         "Filler",
