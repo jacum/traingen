@@ -15,7 +15,7 @@ class ComboSpec extends AnyFunSuite with Matchers:
     for _ <- 1 to 100000 do
       val c = g.generateCombo(p)
       val movements = c.movements.map(m => g.comboMovementsMap(m.id))
-      movements.length should equal(p.movements +- (p.movementsMax - p.movements))
+      movements.length shouldEqual p.movements
       movements.sliding(p.doublesMax + 1).forall(v => v.headOption.forall(h => v.forall(_ === h))) should not be true
       movements.sliding(p.oneSideMovementsMax + 1).forall(_.forall(m => BodyPart.right(m.bodyPart))) should not be true
       movements.sliding(p.oneSideMovementsMax + 1).forall(_.forall(m => BodyPart.left(m.bodyPart))) should not be true

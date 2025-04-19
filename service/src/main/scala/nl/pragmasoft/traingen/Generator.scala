@@ -37,7 +37,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       val allCombo = generateCombo(profile.comboProfile)
 
       val comboParts =
-        split(allCombo.movements, profile.comboProfile.buildUpLength)
+        split(allCombo.movements, allCombo.movements.size / profile.comboProfile.buildUpLength)
           .foldLeft(Vector.empty[Vector[ComboMovementInstance]]) { (acc, curr) =>
             if curr.isEmpty then acc
             else acc :+ (acc.lastOption.getOrElse(Vector.empty) ++ curr)
