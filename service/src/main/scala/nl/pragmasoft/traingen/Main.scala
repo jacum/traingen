@@ -17,7 +17,7 @@ object Main extends IOApp:
   implicit val loggerFactory: LoggerFactory[IO] = Slf4jFactory.create
 
   private val comboGenerator = new Generator[IO]:
-    override val availableElements: Library = LibraryLoader.load("exercises.json")
+    override val allExercises: Library = LibraryLoader.load("exercises.json")
     override val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
 
   private val httpApp: HttpApp[IO] =

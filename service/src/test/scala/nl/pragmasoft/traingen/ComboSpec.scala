@@ -9,7 +9,7 @@ class ComboSpec extends AnyFunSuite with Matchers:
 
   test("combos according to default rules") {
     val g = new Generator[IO]:
-      val availableElements: Library = LibraryLoader.load("exercises.json")
+      val allExercises: Library = LibraryLoader.load("exercises.json")
       val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
     val p = ComboProfile.Default
     for _ <- 1 to 100000 do

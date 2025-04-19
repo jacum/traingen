@@ -96,8 +96,7 @@ function Training() {
             <Link to="/" className="back-link">← Back to Home</Link>
             <h2>Training</h2>
             <div className="p-4">
-                <h3 className="text-xl font-bold mb-4">Duration: {data.data?.duration}</h3>
-                <h3 className="text-xl font-bold mb-4">Sections:</h3>
+                <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
                 {data.data?.sections.map((section, i) => (
                     <div key={i} className="section mb-8 p-6 bg-gray-50 rounded-lg shadow-sm">
                         <div className="flex">

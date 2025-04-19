@@ -23,10 +23,10 @@ object Generator:
 abstract class Generator[F[_]: Applicative] extends Handler[F]:
   import Generator.*
 
-  def availableElements: Library
+  def allExercises: Library
 
   def getLibrary(respond: Resource.GetLibraryResponse.type)(): F[Resource.GetLibraryResponse] =
-    respond.Ok(availableElements).pure[F]
+    respond.Ok(allExercises).pure[F]
 
   def getTraining(respond: Resource.GetTrainingResponse.type)(): F[Resource.GetTrainingResponse] =
     respond.Ok(generateTraining(TrainingProfile.Default)).pure[F]
@@ -64,7 +64,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       )
 
     val elements: Map[SectionType, Vector[Element]] =
-      availableElements.elements.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
+      allExercises.elements.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
     
     def makeExercises(
       existingSections: Vector[TrainingSection],
@@ -72,21 +72,28 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       usedElements: Set[Element] = Set.empty
     ): Vector[Exercise] =
 
+      def collectExistingExercises =
+        existingSections.flatMap(_.exercises).collect {
+          case SimpleExercise(id, _, _) => elements.values.flatten.find(_.id === id)
+        }.flatten.toSet
+
+      val allUsedElements = usedElements ++ collectExistingExercises
+
       def makeCalisthenics =
-        shuffle(elements(SectionType.Calisthenics).filterNot(usedElements.contains))
+        shuffle(elements(SectionType.Calisthenics).filterNot(allUsedElements.contains))
           .take(profile.calisthenicExercises)
           .map(elementToSimpleExercise)
 
       def makeWarmup =
         val openingExercises = elements(SectionType.Warmup)
-          .filterNot(usedElements.contains)
+          .filterNot(allUsedElements.contains)
           .map(e => (e, e.order.toOption))
           .filter(_._2.nonEmpty)
           .sortBy(_._2.getOrElse(Int.MaxValue))
           .map(_._1)
 
         val otherExercises =
-          shuffle(elements(SectionType.Warmup).filterNot(usedElements.contains).filter(_.order.toOption.isEmpty))
+          shuffle(elements(SectionType.Warmup).filterNot(allUsedElements.contains).filter(_.order.toOption.isEmpty))
             .take(
               ((profile.warmupDuration - (openingExercises.length * profile.exerciseDuration * 2)) /
                 (profile.exerciseDuration * 2)).toInt
@@ -96,11 +103,11 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
 
       def makeFiller =
-        val existingExercises = existingSections.filter(_.`type` === SectionType.Filler).flatMap(_.exercises)
-        val remainingExercises = elements(SectionType.Filler).filterNot(existingExercises.contains)
-        shuffle(remainingExercises).take(1).map(elementToSimpleExercise)
+        shuffle(elements(SectionType.Filler).filterNot(allUsedElements.contains))
+          .take(1)
+          .map(elementToSimpleExercise)
 
-      def makeClose = shuffle(elements(SectionType.Close).filterNot(usedElements.contains))
+      def makeClose = shuffle(elements(SectionType.Close).filterNot(allUsedElements.contains))
         .take(profile.closeExercises)
         .map(elementToSimpleExercise)
 

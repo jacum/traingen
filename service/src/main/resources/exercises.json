@@ -29,6 +29,17 @@
       ]
     },
     {
+      "id": "wall-sit",
+      "description": "Wall sit",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "Filler"
+      ]
+    },
+    {
       "id": "fast-punches",
       "description": "Fast punches against the bag",
       "bodyParts": [
@@ -40,6 +51,7 @@
         "Filler"
       ]
     },
+
     {
       "id": "fast-hard-punches",
       "description": "Fast then hard punches against the bag",
