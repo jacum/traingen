@@ -57,11 +57,10 @@ object Codecs:
   given Decoder[GroupType] = stringEnumDecoder
 
   given Encoder[FiniteDuration] = Encoder.encodeString.contramap { fd =>
-    val unit = fd.unit.name
-    val length = fd.length
-    s"$length $unit"
+    val seconds = fd.toUnit(TimeUnit.SECONDS).toInt
+    s"$seconds seconds"
   }
-
+  
   given Decoder[FiniteDuration] = Decoder.decodeString.emap { str =>
     val parts = str.split(" ", 2).map(_.trim)
     if parts.length == 2 then

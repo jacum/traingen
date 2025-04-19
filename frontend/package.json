@@ -12,10 +12,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.11",
-    "@tanstack/react-query-devtools": "^5.62.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/node": "^22.10.5",

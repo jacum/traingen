@@ -150,7 +150,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       )
     }
 
-    val s =
+    val finalSections =
       val baseSections = makeSections
       val durationSoFar = baseSections.map(_.duration).fold(0 seconds)(_ + _)
       val moreFillers = (((profile.trainingDuration - durationSoFar) / 2) / profile.exerciseDuration).toInt
@@ -178,8 +178,8 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       sectionsWithFillers
 
     Training(
-      s.map(_.duration).foldLeft(0 seconds)(_ + _),
-      s
+      finalSections.map(_.duration).foldLeft(0 seconds)(_ + _),
+      finalSections
     )
 
   def getMovements(respond: Resource.GetMovementsResponse.type)(): F[Resource.GetMovementsResponse] =
