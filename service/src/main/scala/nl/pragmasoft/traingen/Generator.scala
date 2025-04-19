@@ -179,13 +179,11 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
     def injectFillerExercises(sections: Vector[TrainingSection]): Vector[TrainingSection] =
       val remainingDuration = profile.trainingDuration - calculateTotalDuration(sections)
-      val totalExercises = (remainingDuration  / (profile.exerciseDuration * 2)).toInt
+      val totalExercises = Math.ceil(remainingDuration / (profile.exerciseDuration * 2)).toInt
 
       val fillerSections = sections.count(_.`type` === SectionType.Filler)
       if fillerSections === 0 then sections
       else
-        val exercisesPerSection = math.max(1, totalExercises / fillerSections)
-
         val usedElements = sections
           .flatMap(_.exercises)
           .collect { case SimpleExercise(id, _, _) =>
@@ -198,12 +196,20 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           elements(SectionType.Filler).filterNot(usedElements.contains)
         )
 
+        val exercisesPerSection = {
+          val baseAmount = totalExercises / fillerSections
+          val remainder = totalExercises % fillerSections
+          (0 until fillerSections).map(i =>
+            if (i < remainder) baseAmount + 1 else baseAmount
+          ).toVector
+        }
+
         var fillerIndex = 0
         sections.map { section =>
           if section.`type` =!= SectionType.Filler then section
           else
-            val start = fillerIndex * exercisesPerSection
-            val end = start + exercisesPerSection
+            val start = exercisesPerSection.take(fillerIndex).sum
+            val end = start + exercisesPerSection(fillerIndex)
             fillerIndex += 1
 
             val fillerExercises = availableFillers
@@ -252,8 +258,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       allMovements.flatMap { m =>
         m.after.find(_.id === StartExercise).map(mc => ComboMovementChance(m.id, mc.chance))
       }
-
-    // crude integrity check
+    
     allMovements.map(_.id).foreach(k => assert(movementsAfter.contains(k), s"$k has no 'after' movements"))
 
     @SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
@@ -313,7 +318,15 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           )
         )
 
-    val allCombo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
+    @tailrec
+    def generateBalancedCombo(): Vector[ComboMovement] = {
+      val combo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
+      val leftRatio = combo.count(m => BodyPart.left(m.bodyPart)).toDouble / combo.size
+      if (leftRatio >= 0.4 && leftRatio <= 0.6) combo
+      else generateBalancedCombo()
+    }
+
+    val allCombo = generateBalancedCombo()
 
     ComboInstance(
       calculateDuration[ComboMovement](allCombo, (m1, m2) => profile.transitionDuration(m1.bodyPart, m2.bodyPart)),
