@@ -101,23 +101,37 @@ function Training() {
     const [warmupMinutes, setWarmupMinutes] = useState<number>(15);
     const [comboMovements, setComboMovements] = useState<number>(6);
     const [comboBuildup, setComboBuildup] = useState<number>(3);
+    const [isDefault, setIsDefault] = useState<boolean>(true);
 
     const {isPending, error, data, isFetching, refetch} = useQuery({
-        queryKey: ['trainingData', totalMinutes, calisthenicsExercises, warmupMinutes, comboMovements,
-            comboBuildup],
-        enabled: true,
-        queryFn: async () => await client.GET("/user/api/training", {
-            params: {
-                query: {
-                    totalMinutes,
-                    calisthenicsExercises,
-                    warmupMinutes,
-                    comboMovements,
-                    comboBuildup
-                }
-            },
-        }),
+        queryKey: ['trainingData'],
+        enabled: isDefault,
+        queryFn: async () => {
+            const response = await client.GET("/user/api/training", {
+                params: {
+                    query: {
+                        totalMinutes,
+                        calisthenicsExercises,
+                        warmupMinutes,
+                        comboMovements,
+                        comboBuildup
+                    }
+                },
+            });
+            setIsDefault(false);
+            return response;
+        },
     })
+
+    const handleChange = (setter: (value: number) => void, value: number) => {
+        setter(value);
+        setIsDefault(false);
+    };
+
+    const handleRefetch = () => {
+        refetch();
+        setIsDefault(false);
+    };
 
     if (isPending || isFetching) return 'Loading...'
 
@@ -131,43 +145,78 @@ function Training() {
                 Total Minutes: <input
                 type="number"
                 value={totalMinutes}
-                onChange={(e) => setTotalMinutes(Number(e.target.value))}
+                onChange={(e) => handleChange(setTotalMinutes, Number(e.target.value))}
                 min="30" max="120"
                 className="border rounded px-2 py-1 w-20"
             />
                 Warmup Minutes: <input
                 type="number"
                 value={warmupMinutes}
-                onChange={(e) => setWarmupMinutes(Number(e.target.value))}
+                onChange={(e) => handleChange(setWarmupMinutes, Number(e.target.value))}
                 min="5" max="30"
                 className="border rounded px-2 py-1 w-20"
             /> Calisthenic exercises: <input
                 type="number"
                 value={calisthenicsExercises}
-                onChange={(e) => setCalisthenicsExercises(Number(e.target.value))}
+                onChange={(e) => handleChange(setCalisthenicsExercises, Number(e.target.value))}
                 min="3" max="7"
                 className="border rounded px-2 py-1 w-20"
             /> Combo movements: <input
                 type="number"
                 value={comboMovements}
-                onChange={(e) => setComboMovements(Number(e.target.value))}
+                onChange={(e) => handleChange(setComboMovements, Number(e.target.value))}
                 min="4" max="8"
                 className="border rounded px-2 py-1 w-20"
             /> Combo buildup: <input
                 type="number"
                 value={comboBuildup}
-                onChange={(e) => setComboBuildup(Number(e.target.value))}
+                onChange={(e) => handleChange(setComboBuildup, Number(e.target.value))}
                 min="2" max="4"
                 className="border rounded px-2 py-1 w-20"
             />
                 <button
-                    onClick={() => refetch()}
-                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                    onClick={handleRefetch}
+                    disabled={isDefault}
+                    className={`ml-4 px-4 py-2 text-white rounded transition-colors ${
+                        isDefault
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-blue-500 hover:bg-blue-600'
+                    }`}>
                     Regenerate
                 </button>
             </div>
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
+                <div className="w-full h-12 bg-gray-100 rounded-lg mb-6 flex overflow-hidden">
+                    {data.data?.sections.map((section, i) => {
+                        const durationMatch = section.duration.match(/(\d+)/);
+                        const seconds = durationMatch ? parseInt(durationMatch[1]) : 0;
+                        const totalSeconds = data.data?.sections.reduce((acc, s) => {
+                            const match = s.duration.match(/(\d+)/);
+                            return acc + (match ? parseInt(match[1]) : 0);
+                        }, 0) || 1;
+                        const width = (seconds / totalSeconds) * 100;
+
+                        const colors = {
+                            'Warmup': 'bg-yellow-200',
+                            'Calisthenics': 'bg-green-200',
+                            'Workout': 'bg-blue-200',
+                            'Combo': 'bg-red-200',
+                            'Cooldown': 'bg-purple-200'
+                        };
+
+                        return (
+                            <div
+                                key={i}
+                                className={`${colors[section.type as keyof typeof colors]} h-full`}
+                                style={{width: `${width}%`}}
+
+                            ><div className="text-xs font-bold">{`${section.type}`}</div>
+                                <div className="text-xs font-bold">{`${section.duration}`}</div></div>
+                        );
+                    })}
+                </div>
+
                 {data.data?.sections.map((section, i) => (
                     <div key={i} className="section mb-8 p-6 bg-gray-50 rounded-lg shadow-sm">
                         <div className="flex">
