@@ -47,9 +47,6 @@ object Codecs:
   given Encoder[BodyPart] = stringEnumEncoder
   given Decoder[BodyPart] = stringEnumDecoder
 
-  given Encoder[ElementType] = stringEnumEncoder
-  given Decoder[ElementType] = stringEnumDecoder
-
   given Encoder[SectionType] = stringEnumEncoder
   given Decoder[SectionType] = stringEnumDecoder
 
@@ -60,7 +57,7 @@ object Codecs:
     val seconds = fd.toUnit(TimeUnit.SECONDS).toInt
     s"$seconds seconds"
   }
-  
+
   given Decoder[FiniteDuration] = Decoder.decodeString.emap { str =>
     val parts = str.split(" ", 2).map(_.trim)
     if parts.length == 2 then

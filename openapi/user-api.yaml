@@ -13,6 +13,13 @@ paths:
     get:
       summary: Make combo
       operationId: getCombo
+      parameters:
+        - name: movements
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Number of movements in combo
       responses:
         200:
           $ref: '#/components/responses/ComboInstance'
@@ -29,6 +36,37 @@ paths:
     get:
       summary: Get training schema
       operationId: getTraining
+      parameters:
+        - name: comboMovements
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Number of movements in combo
+        - name: comboBuildup
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Buildup in combo
+        - name: totalMinutes
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Length of exercise in minutes
+        - name: calisthenicsExercises
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Number of calisthenics exercises
+        - name: warmupMinutes
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Length of warmup in minutes
       responses:
         200:
           $ref: '#/components/responses/TrainingInstance'
