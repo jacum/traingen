@@ -41,8 +41,20 @@
       ]
     },
     {
-      "id": "hard-punches",
-      "description": "Hard punches against the bag",
+      "id": "fast-hard-punches",
+      "description": "Fast then hard punches against the bag",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "Warmup",
+        "Filler"
+      ]
+    },
+    {
+      "id": "fast-hard-punches-2-series",
+      "description": "Fast then hard punches against the bag, in two series",
       "bodyParts": [
         "LeftArm",
         "RightArm"

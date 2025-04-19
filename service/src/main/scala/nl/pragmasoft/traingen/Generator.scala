@@ -155,7 +155,10 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       (previousSections :+ newSection, newUsedElements)
     }._1
 
-    def injectFillers(baseSections: Vector[TrainingSection], totalFillers: Int) = {
+    def injectFillers(baseSections: Vector[TrainingSection]) = {
+      val durationSoFar = baseSections.map(_.duration).fold(0 seconds)(_ + _)
+      val totalFillers = (((profile.trainingDuration - durationSoFar) / 2) / profile.exerciseDuration).toInt
+
       if totalFillers <= 0 then baseSections
       else
         val comboOrCloseIndices = baseSections.zipWithIndex.collect {
@@ -186,12 +189,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           }
     }
 
-    val finalSections =
-      val baseSections = makeSections
-      val durationSoFar = baseSections.map(_.duration).fold(0 seconds)(_ + _)
-      val moreFillers = (((profile.trainingDuration - durationSoFar) / 2) / profile.exerciseDuration).toInt
-
-      injectFillers(baseSections, moreFillers)
+    val finalSections = injectFillers(makeSections)
 
     Training(
       finalSections.map(_.duration).foldLeft(0 seconds)(_ + _),
