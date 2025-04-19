@@ -9,8 +9,7 @@
       ],
       "order": 1,
       "sections": [
-        "Warmup",
-        "Filler"
+        "Warmup"
       ]
     },
     {
@@ -25,7 +24,8 @@
       "order": 2,
       "sections": [
         "Warmup",
-        "Filler"
+        "Filler",
+        "Close"
       ]
     },
     {
@@ -176,6 +176,30 @@
       ],
       "sections": [
         "Calisthenics"
+      ]
+    },
+    {
+      "id": "lunges",
+      "description": "Step forward with one leg, lower your body until both knees are at 90 degrees, then push back to standing—repeat on the other leg.",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "2-to-8",
+      "description": "Series of 2 to 8 left-right straignt punches",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "Core"
+      ],
+      "sections": [
+        "Filler",
+        "Close"
       ]
     }
   ]

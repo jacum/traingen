@@ -100,7 +100,9 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         val remainingExercises = elements(SectionType.Filler).filterNot(existingExercises.contains)
         shuffle(remainingExercises).take(1).map(elementToSimpleExercise)
 
-      def makeClose = shuffle(elements(SectionType.Close).filterNot(usedElements.contains)).take(1).map(elementToSimpleExercise)
+      def makeClose = shuffle(elements(SectionType.Close).filterNot(usedElements.contains))
+        .take(profile.closeExercises)
+        .map(elementToSimpleExercise)
 
       sectionType match
         case SectionType.Warmup       => makeWarmup
@@ -149,46 +151,39 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         sectionDuration(group, exercises),
         exercises
       )
-      val newUsedElements = usedElements ++ exercises.collect { case SimpleExercise(id, _, _) => elements.values.flatten.find(_.id == id) }.flatten
+      val newUsedElements = usedElements ++ exercises.collect { case SimpleExercise(id, _, _) => elements.values.flatten.find(_.id === id) }.flatten
       (previousSections :+ newSection, newUsedElements)
     }._1
 
-    def joinAdjacentFillers(sections: Vector[TrainingSection]): Vector[TrainingSection] =
-      sections.foldLeft(Vector.empty[TrainingSection]) { (acc, curr) =>
-        acc.lastOption match
-          case Some(last) if last.`type` === SectionType.Filler && curr.`type` === SectionType.Filler =>
-            acc.init :+ TrainingSection(
-              "filler",
-              SectionType.Filler,
-              GroupType.split,
-              last.duration + curr.duration,
-              last.exercises ++ curr.exercises
-            )
-          case _                                                                                      => acc :+ curr
-      }
-
-    def injectFillers(baseSections: Vector[TrainingSection], moreFillers: Int) = {
-      val withFillers = (0 until moreFillers).foldLeft(baseSections) { (sections, _) =>
-        val comboOrCloseIndices = sections.zipWithIndex.collect {
+    def injectFillers(baseSections: Vector[TrainingSection], totalFillers: Int) = {
+      if totalFillers <= 0 then baseSections
+      else
+        val comboOrCloseIndices = baseSections.zipWithIndex.collect {
           case (s, i) if s.`type` === SectionType.Combo || s.`type` === SectionType.Close => i
         }
 
-        if comboOrCloseIndices.isEmpty then sections
+        if comboOrCloseIndices.isEmpty then baseSections
         else
-          val insertAtIndex = comboOrCloseIndices(Random.nextInt(comboOrCloseIndices.length))
-          val (before, after) = sections.splitAt(insertAtIndex)
+          val fillersPerSection = totalFillers / comboOrCloseIndices.length
+          val extraFillers = totalFillers % comboOrCloseIndices.length
 
-          before ++ Vector(
-            TrainingSection(
-              "filler",
-              SectionType.Filler,
-              GroupType.split,
-              profile.exerciseDuration * 2,
-              makeExercises(sections, SectionType.Filler)
-            )
-          ) ++ after
-      }
-      joinAdjacentFillers(withFillers)
+          comboOrCloseIndices.zipWithIndex.foldLeft(baseSections) { case (sections, (insertIndex, idx)) =>
+            val fillerCount = fillersPerSection + (if idx < extraFillers then 1 else 0)
+            if fillerCount == 0 then sections
+            else
+              val (before, after) = sections.splitAt(insertIndex)
+              val fillerExercises = (0 until fillerCount).flatMap(_ => makeExercises(sections, SectionType.Filler)).toVector
+
+              before ++ Vector(
+                TrainingSection(
+                  "filler",
+                  SectionType.Filler,
+                  GroupType.split,
+                  profile.exerciseDuration * 2 * fillerCount,
+                  fillerExercises
+                )
+              ) ++ after
+          }
     }
 
     val finalSections =
