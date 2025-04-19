@@ -16,4 +16,4 @@ case class ComboProfile(
 
 object ComboProfile:
   val Default: ComboProfile =
-    ComboProfile(4, 7, 8, BodyPart.DefaultTransitionDuration, 1, 2)
+    ComboProfile(4, 4, 8, BodyPart.DefaultTransitionDuration, 1, 2)
