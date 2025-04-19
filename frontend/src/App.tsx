@@ -99,15 +99,20 @@ function Training() {
     const [totalMinutes, setTotalMinutes] = useState<number>(45);
     const [calisthenicsExercises, setCalisthenicsExercises] = useState<number>(5);
     const [warmupMinutes, setWarmupMinutes] = useState<number>(15);
+    const [comboMovements, setComboMovements] = useState<number>(6);
+    const [comboBuildup, setComboBuildup] = useState<number>(3);
 
     const {isPending, error, data, isFetching} = useQuery({
-        queryKey: ['trainingData', totalMinutes, calisthenicsExercises, warmupMinutes],
+        queryKey: ['trainingData', totalMinutes, calisthenicsExercises, warmupMinutes, comboMovements,
+            comboBuildup],
         queryFn: async () => await client.GET("/user/api/training", {
             params: {
                 query: {
                     totalMinutes,
-                    calisthenicsExercises: calisthenicsExercises,
-                    warmupMinutes
+                    calisthenicsExercises,
+                    warmupMinutes,
+                    comboMovements,
+                    comboBuildup
                 }
             },
         }),
@@ -140,6 +145,18 @@ function Training() {
                 value={calisthenicsExercises}
                 onChange={(e) => setCalisthenicsExercises(Number(e.target.value))}
                 min="3" max="7"
+                className="border rounded px-2 py-1 w-20"
+            /> Combo movements: <input
+                type="number"
+                value={comboMovements}
+                onChange={(e) => setComboMovements(Number(e.target.value))}
+                min="4" max="8"
+                className="border rounded px-2 py-1 w-20"
+            /> Combo buildup: <input
+                type="number"
+                value={comboBuildup}
+                onChange={(e) => setComboBuildup(Number(e.target.value))}
+                min="2" max="4"
                 className="border rounded px-2 py-1 w-20"
             />
             </div>
