@@ -163,39 +163,86 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       (previousSections :+ newSection, newUsedElements)
     }._1
 
-    def injectFillers(baseSections: Vector[TrainingSection]) = {
-      val durationSoFar = baseSections.map(_.duration).fold(0 seconds)(_ + _)
-      val totalFillers = (((profile.trainingDuration - durationSoFar) / 2) / profile.exerciseDuration).toInt
+    // Helper methods
+    def calculateTotalDuration(sections: Vector[TrainingSection]): FiniteDuration =
+      sections.map(_.duration).fold(0.seconds)(_ + _)
 
-      if totalFillers <= 0 then baseSections
-      else
-        val comboOrCloseIndices = baseSections.zipWithIndex.collect {
-          case (s, i) if s.`type` === SectionType.Combo || s.`type` === SectionType.Close => i
-        }
+    def findFillerInsertionPoints(sections: Vector[TrainingSection]): Vector[Int] =
+      sections.zipWithIndex.collect {
+        case (section, index) if section.`type` === SectionType.Combo || section.`type` === SectionType.Close => index
+      }
 
-        if comboOrCloseIndices.isEmpty then baseSections
-        else
-          val fillersPerSection = totalFillers / comboOrCloseIndices.length
-          val extraFillers = totalFillers % comboOrCloseIndices.length
-
-          comboOrCloseIndices.zipWithIndex.foldLeft(baseSections) { case (sections, (insertIndex, idx)) =>
-            val fillerCount = fillersPerSection + (if idx < extraFillers then 1 else 0)
-            if fillerCount == 0 then sections
-            else
-              val (before, after) = sections.splitAt(insertIndex)
-              val fillerExercises = (0 until fillerCount).flatMap(_ => makeExercises(sections, SectionType.Filler)).toVector
-
-              before ++ Vector(
-                TrainingSection(
-                  "filler",
-                  SectionType.Filler,
-                  GroupType.split,
-                  profile.exerciseDuration * 2 * fillerCount,
-                  fillerExercises
-                )
-              ) ++ after
-          }
+    def distributeFillers(totalFillers: Int, insertionPointCount: Int): (Int, Int) = {
+      val baseFillerCount = totalFillers / insertionPointCount
+      val remainingFillers = totalFillers % insertionPointCount
+      (baseFillerCount, remainingFillers)
     }
+
+    def injectFillers(baseSections: Vector[TrainingSection]): Vector[TrainingSection] = {
+      val durationSoFar = calculateTotalDuration(baseSections)
+      val remainingDuration = profile.trainingDuration - durationSoFar
+      val FillerMultiplier = 2 // Multiplier used for filler duration calculation
+      
+      // Calculate how many filler exercises we need to add
+      val totalFillers = ((remainingDuration / FillerMultiplier) / profile.exerciseDuration).toInt
+      
+      if (totalFillers <= 0) return baseSections
+      
+      // Find suitable places to insert fillers (after combo or close sections)
+      val insertionPoints = findFillerInsertionPoints(baseSections)
+      if (insertionPoints.isEmpty) return baseSections
+      
+      // Calculate distribution of fillers
+      val (fillersPerPoint, extraFillers) = distributeFillers(totalFillers, insertionPoints.length)
+      
+      // Insert fillers at calculated points
+      insertFillerSections(baseSections, insertionPoints, fillersPerPoint, extraFillers)
+    }
+
+
+    def insertFillerSections(
+        sections: Vector[TrainingSection],
+        insertionPoints: Vector[Int],
+        baseCount: Int,
+        extraCount: Int
+    ): Vector[TrainingSection] = {
+      insertionPoints.zipWithIndex.foldLeft((sections, Set.empty[Element])) { 
+        case ((currentSections, usedFillerElements), (insertIndex, idx)) =>
+          val fillerCount = baseCount + (if (idx < extraCount) 1 else 0)
+          
+          if (fillerCount == 0) {
+            (currentSections, usedFillerElements)
+          } else {
+            val (sectionsBeforePoint, sectionsAfterPoint) = currentSections.splitAt(insertIndex)
+            val fillerExercises = createFillerExercises(fillerCount, currentSections, usedFillerElements)
+            val newUsedElements = trackUsedElements(usedFillerElements, fillerExercises)
+            val fillerSection = createFillerSection(fillerCount, fillerExercises)
+            
+            (sectionsBeforePoint ++ Vector(fillerSection) ++ sectionsAfterPoint, newUsedElements)
+          }
+      }._1
+    }
+
+    def createFillerExercises(
+        count: Int, 
+        sections: Vector[TrainingSection], 
+        usedElements: Set[Element]
+    ): Vector[Exercise] =
+      (0 until count).flatMap(_ => makeExercises(sections, SectionType.Filler, usedElements)).toVector
+
+    def trackUsedElements(usedElements: Set[Element], exercises: Vector[Exercise]): Set[Element] =
+      usedElements ++ exercises.collect {
+        case SimpleExercise(id, _, _) => elements.values.flatten.find(_.id === id)
+      }.flatten
+
+    def createFillerSection(count: Int, exercises: Vector[Exercise]): TrainingSection =
+      TrainingSection(
+        "filler",
+        SectionType.Filler,
+        GroupType.split,
+        profile.exerciseDuration * 2 * count,
+        exercises
+      )
 
     val finalSections = injectFillers(makeSections)
 
