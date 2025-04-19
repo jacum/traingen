@@ -2,7 +2,7 @@ import './App.css'
 import './index.css'
 
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
-import { paths } from './services/user-api.ts'
+import { paths, components } from './services/user-api.ts'
 import createClient from "openapi-fetch";
 import {
     QueryClient,
@@ -109,34 +109,40 @@ function Training() {
                             <div className="w-1/2">
                                 <ul>
                                     {section.exercises.map((exercise, j) => (
-                                        <li key={j}>
+                                        <li key={j} className="mb-4">
                                             {exercise.kind === 'combo' ? (
-                                                <div>
-                                                    <div>Combo: {exercise.ref} - {exercise.duration}</div>
-                                                    <ul>
-                                                        {exercise.movements && exercise.movements.map((m, k) => (
-                                                            <li key={k}>
-                                                                {m.description}
-                                                                {m.picture &&
-                                                                    <img src={m.picture} alt={m.description}/>}
-                                                                {m.video && <video src={m.video} controls/>}
-                                                            </li>
-                                                        ))}
+                                                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                    <div className="font-semibold text-blue-700 mb-2">{exercise.ref} - {exercise.duration}</div>
+                                                    <ul className="space-y-2">
+                                                        {(exercise as components["schemas"]["ComboExercise"]).movements &&
+                                                            (exercise as components["schemas"]["ComboExercise"]).movements.map(
+                                                                (m, k) => (
+                                                                    <li key={k} className="text-blue-600">
+                                                                        {m.description}
+                                                                        {m.picture &&
+                                                                            <img src={m.picture} alt={m.description} className="mt-2 rounded"/>}
+                                                                        {m.video &&
+                                                                            <video src={m.video} controls className="mt-2 rounded"/>}
+                                                                    </li>
+                                                                ))}
                                                     </ul>
                                                 </div>
                                             ) : exercise.kind === 'composite' ? (
-                                                <div>
-                                                    <div>Composite: {exercise.ref} - {exercise.duration}</div>
-                                                    <ul>
-                                                        {exercise.exercises?.map((e, k) => (
-                                                            <li key={k}>{e.kind}: {e.ref} - {e.duration}</li>
-                                                        ))}
+                                                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                                                    <div className="font-semibold text-green-700 mb-2">{exercise.ref} - {exercise.duration}</div>
+                                                    <ul className="space-y-2">
+                                                        {(exercise as components["schemas"]["CompositeExercise"]).exercises?.map(
+                                                            (e, k) => (
+                                                                <li key={k} className="text-green-600">{e.kind}: {e.ref} - {e.duration}</li>
+                                                            ))}
                                                     </ul>
                                                 </div>
                                             ) : (
-                                                <div>
-                                                    Simple: {exercise.ref} - {exercise.duration}
-                                                    {exercise.reps && ` (${exercise.reps} reps)`}
+                                                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                                    <div className="font-semibold text-gray-700">
+                                                        {exercise.ref} - {exercise.duration}
+                                                        {exercise.reps && ` (${exercise.reps} reps)`}
+                                                    </div>
                                                 </div>
                                             )}
                                         </li>
