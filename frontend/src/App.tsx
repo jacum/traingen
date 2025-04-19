@@ -49,7 +49,7 @@ function HomePage() {
 
 function Combo() {
     const [movementsCount, setMovementsCount] = useState<number>(6);
-    const {isPending, error, data, isFetching} = useQuery({
+    const {isPending, error, data, isFetching, refetch} = useQuery({
         queryKey: ['comboData', movementsCount],
         queryFn: async () => await client.GET("/user/api/combo/make", {
             params: {
@@ -67,22 +67,25 @@ function Combo() {
     return (
         <div className="p-4">
             <Link to="/" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Home</Link>
-            <h2 className="text-2xl font-bold mb-4">Combo</h2>
+
             <div className="mb-4 flex gap-4 items-center">
                 Movements: <input
-                    type="number"
-                    value={movementsCount}
-                    onChange={(e) => setMovementsCount(Number(e.target.value))}
-                    min="2" max="10"
-                    className="border rounded px-2 py-1 w-20"
-                />
+                type="range"
+                value={movementsCount}
+                onChange={(e) => setMovementsCount(Number(e.target.value))}
+                min="3" max="10"
+                className="w-40"
+            />
+                <span>{movementsCount}</span>
+                <button
+                    onClick={() => refetch()}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                    Regenerate
+                </button>
             </div>
+
             <table className="w-full border-collapse border">
-                <thead>
-                <tr>
-                    <th className="border p-2 bg-gray-100">Combo</th>
-                </tr>
-                </thead>
                 <tbody key="movements">
                 {data.data?.movements.map((m, i) =>
                     <tr key={i}>
