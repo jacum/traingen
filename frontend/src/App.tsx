@@ -73,7 +73,7 @@ function Combo() {
                     type="number"
                     value={movementsCount}
                     onChange={(e) => setMovementsCount(Number(e.target.value))}
-                    min="1" max="10"
+                    min="2" max="10"
                     className="border rounded px-2 py-1 w-20"
                 />
             </div>

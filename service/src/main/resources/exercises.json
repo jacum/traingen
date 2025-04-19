@@ -123,8 +123,8 @@
       ]
     },
     {
-      "id": "four-kicks-burpee",
-      "description": "Four kicks and then a burpee",
+      "id": "four-punches-burpee",
+      "description": "Left right straight, left right hooks - and then a burpee",
       "bodyParts": [
         "LeftArm",
         "RightArm",
@@ -150,8 +150,66 @@
       ]
     },
     {
+      "id": "situps-hold",
+      "description": "Hold legs raised",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg",
+        "Core"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "situps-cycle",
+      "description": "Hold legs raised, cycle movements",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg",
+        "Core"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "high-knees",
+      "description": "High knees",
+      "bodyParts": [
+        "LeftLeg",
+        "RightLeg"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "high-to-low-plank",
+      "description": "High plank down to low plank up to high plank againn",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm",
+        "Core"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
       "id": "jump-squats",
       "description": "Jump squats",
+      "bodyParts": [
+        "RightLeg",
+        "LeftLeg"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "hold-jump-squats",
+      "description": "Hold squat, then jump, then hold ...",
       "bodyParts": [
         "RightLeg",
         "LeftLeg"
