@@ -155,7 +155,7 @@ function Training() {
                 onChange={(e) => handleChange(setWarmupMinutes, Number(e.target.value))}
                 min="5" max="30"
                 className="border rounded px-2 py-1 w-20"
-            /> Calisthenic exercises: <input
+            /> Calisthenic series: <input
                 type="number"
                 value={calisthenicsExercises}
                 onChange={(e) => handleChange(setCalisthenicsExercises, Number(e.target.value))}
@@ -187,7 +187,8 @@ function Training() {
             </div>
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
-                <div className="w-full h-12 bg-gray-100 rounded-lg mb-6 flex overflow-hidden">
+
+                <div className="w-full bg-gray-100 rounded-lg mb-6 flex overflow-hidden">
                     {data.data?.sections.map((section, i) => {
                         const durationMatch = section.duration.match(/(\d+)/);
                         const seconds = durationMatch ? parseInt(durationMatch[1]) : 0;
@@ -198,17 +199,17 @@ function Training() {
                         const width = (seconds / totalSeconds) * 100;
 
                         const colors = {
-                            'Warmup': 'bg-yellow-200',
-                            'Calisthenics': 'bg-green-200',
-                            'Workout': 'bg-blue-200',
-                            'Combo': 'bg-red-200',
-                            'Cooldown': 'bg-purple-200'
+                            'Warmup': 'bg-yellow-300',
+                            'Calisthenics': 'bg-green-300',
+                            'Workout': 'bg-blue-300',
+                            'Combo': 'bg-red-300',
+                            'Cooldown': 'bg-purple-300'
                         };
 
                         return (
                             <div
                                 key={i}
-                                className={`${colors[section.type as keyof typeof colors]} h-full`}
+                                className={`${colors[section.type as keyof typeof colors]} h-full py-4`}
                                 style={{width: `${width}%`}}
 
                             ><div className="text-xs text-black font-bold">{`${section.type}`}</div>
@@ -221,8 +222,8 @@ function Training() {
                     <div key={i} className="section mb-8 p-6 bg-gray-50 rounded-lg shadow-sm">
                         <div className="flex">
                             <div className="w-1/2">
-                                <h4 className="text-lg font-semibold mb-2">{section.type}</h4>
-                                <p className="text-gray-600 mb-1">Duration: {section.duration}</p>
+                                <h4 className="text-lg font-semibold text-black mb-2">{section.type}</h4>
+                                <p className="text-gray-600 mb-1">{section.duration}</p>
                                 <p className="text-gray-600 mb-3">Group: {section.group}</p>
                             </div>
                             <div className="w-1/2">
