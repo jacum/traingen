@@ -241,6 +241,7 @@ components:
       required:
         - kind
         - ref
+        - duration
       properties:
         kind:
           description: Class of an exercise - simple, combo etc.
@@ -259,8 +260,10 @@ components:
       discriminator:
         propertyName: kind
         mapping:
-          simple: SimpleExercise
-          composite: CompositeExercise
+          simple: '#/components/schemas/SimpleExercise'
+          composite: '#/components/schemas/CompositeExercise'
+          combo: '#/components/schemas/ComboExercise'
+
     SimpleExercise:
       description: A simple unit of exercise
       allOf:

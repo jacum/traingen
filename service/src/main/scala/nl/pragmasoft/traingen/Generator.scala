@@ -19,6 +19,7 @@ object Generator:
   implicit val sectionTypeEq: Eq[SectionType] = Eq.fromUniversalEquals
 
 
+@SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
 abstract class Generator[F[_]: Applicative] extends Handler[F]:
   import Generator.*
 
@@ -31,36 +32,43 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     respond.Ok(generateTraining(TrainingProfile.Default)).pure[F]
 
   def generateTraining(profile: TrainingProfile): Training =
-    val elements: Map[SectionType, Vector[Element]] =
-      availableElements.elements.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
 
-    val remainingDuration =
-      profile.trainingDuration - profile.warmupDuration - profile.closeExercises * profile.exerciseDuration
+    def makeCombo =
+      val allCombo = generateCombo(profile.comboProfile)
 
-    val calisthenicsDuration = (profile.exerciseDuration * profile.calisthenicExercises)
+      val comboParts =
+        split(allCombo.movements, profile.comboProfile.buildUpLength)
+          .foldLeft(Vector.empty[Vector[ComboMovementInstance]]) { (acc, curr) =>
+            acc :+ (acc.lastOption.getOrElse(Vector.empty) ++ curr)
+          }
 
-    val comboDuration =
-      val trialCombos = Vector.fill(100)(generateCombo(profile.comboProfile)).map(_.duration)
-      val avgDuration = trialCombos.fold(0 seconds)(_ + _) / trialCombos.size
-      avgDuration
-
-    val sections: Vector[SectionType] = Vector(SectionType.Warmup, SectionType.Filler) ++
-      Vector
-        .fill((remainingDuration / (comboDuration + calisthenicsDuration)).toInt)(
-          Vector(SectionType.Combo, SectionType.Calisthenics, SectionType.Filler)
+      comboParts.map { ms =>
+        ComboExercise(
+          "combo-training",
+          profile.exerciseDuration,
+          Absent,
+          ms
         )
-        .flatten ++ Vector(SectionType.Close)
+      } :+ ComboExercise(
+        "combo-reps",
+        allCombo.duration * profile.comboReps,
+        Present(profile.comboReps),
+        allCombo.movements
+      )
 
     def elementToSimpleExercise(e: Element): Exercise =
       SimpleExercise(
         e.id,
-        duration = Present(profile.exerciseDuration),
+        duration = profile.exerciseDuration,
         reps = Absent
       )
 
+    val elements: Map[SectionType, Vector[Element]] =
+      availableElements.elements.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
+    
     def makeExercises(
-        existingSections: Vector[TrainingSection],
-        sectionType: SectionType
+      existingSections: Vector[TrainingSection],
+      sectionType: SectionType
     ): Vector[Exercise] =
 
       def makeCalisthenics =
@@ -84,28 +92,6 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
         (openingExercises ++ otherExercises).map(elementToSimpleExercise)
 
-      def makeCombo =
-        val allCombo = generateCombo(profile.comboProfile)
-
-        val comboParts =
-          split(allCombo.movements, profile.comboProfile.buildUpLength)
-            .foldLeft(Vector.empty[Vector[ComboMovementInstance]]) { (acc, curr) =>
-              acc :+ (acc.lastOption.getOrElse(Vector.empty) ++ curr)
-            }
-
-        comboParts.map { ms =>
-          ComboExercise(
-            "combo-training",
-            Present(profile.exerciseDuration),
-            Absent,
-            ms
-          )
-        } :+ ComboExercise(
-          "combo-reps",
-          Present(allCombo.duration * profile.comboReps),
-          Present(profile.comboReps),
-          allCombo.movements
-        )
 
       def makeFiller =
         val existingExercises = existingSections.filter(_.`type` === SectionType.Filler).flatMap(_.exercises)
@@ -125,8 +111,30 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       (g match
         case GroupType.together => 1
         case GroupType.split    => 2
-      ) * e.length * profile.exerciseDuration
+        ) * e.length * {
+        profile.exerciseDuration
+      }
 
+    val remainingDuration =
+      profile.trainingDuration - profile.warmupDuration - profile.closeExercises * profile.exerciseDuration
+
+    val calisthenicsDuration = profile.exerciseDuration * profile.calisthenicExercises
+
+    // assessing average combo size for given profile 
+    val expectedFullComboDuration =
+      val trialCombos = Vector.fill(100)(makeCombo).map(_.map(_.duration).fold(0 seconds)(_ + _))
+      val avgDuration = trialCombos.fold(0 seconds)(_ + _) / trialCombos.size
+      avgDuration * 2 // split group
+
+    val numberOfCombos = (remainingDuration / (expectedFullComboDuration + calisthenicsDuration)).toInt
+    val sections: Vector[SectionType] = Vector(SectionType.Warmup) ++
+      Vector
+        .fill(numberOfCombos)(
+          Vector(SectionType.Combo, SectionType.Calisthenics)
+        )
+        .flatten ++ Vector(SectionType.Close)
+
+ 
     def makeSections: Vector[TrainingSection] = sections.foldLeft(
       Vector.empty[TrainingSection]
     ) { (previousSections, sectionType) =>
@@ -145,11 +153,27 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     val s =
       val baseSections = makeSections
       val durationSoFar = baseSections.map(_.duration).fold(0 seconds)(_ + _)
-      val moreFillers = (profile.trainingDuration - durationSoFar) / 2
+      val moreFillers = (((profile.trainingDuration - durationSoFar) / 2) / profile.exerciseDuration).toInt
 
-      val sectionsWithFillers = baseSections.map {
-        case s if s.`type` === SectionType.Filler => s
-        case s                                   => s
+      val sectionsWithFillers = (0 until moreFillers).foldLeft(baseSections) { (sections, _) =>
+        val comboOrCloseIndices = sections.zipWithIndex.collect {
+          case (s, i) if s.`type` === SectionType.Combo || s.`type` === SectionType.Close => i
+        }
+      
+        if comboOrCloseIndices.isEmpty then sections
+        else
+          val insertAtIndex = comboOrCloseIndices(Random.nextInt(comboOrCloseIndices.length))
+          val (before, after) = sections.splitAt(insertAtIndex)
+      
+          before ++ Vector(
+            TrainingSection(
+              "filler",
+              SectionType.Filler,
+              GroupType.split,
+              profile.exerciseDuration * 2,
+              makeExercises(sections, SectionType.Filler)
+            )
+          ) ++ after
       }
       sectionsWithFillers
 
@@ -159,7 +183,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     )
 
   def getMovements(respond: Resource.GetMovementsResponse.type)(): F[Resource.GetMovementsResponse] =
-    respond.Ok(allMovements).pure[F]
+      respond.Ok(allMovements).pure[F]
 
   def getCombo(respond: Resource.GetComboResponse.type)(): F[Resource.GetComboResponse] =
     respond

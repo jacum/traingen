@@ -126,8 +126,8 @@
       ]
     },
     {
-      "id": "side-plank",
-      "description": "Plank + side planks",
+      "id": "side-planks",
+      "description": "High plank + side planks",
       "bodyParts": [
         "LeftArm",
         "RightArm",
