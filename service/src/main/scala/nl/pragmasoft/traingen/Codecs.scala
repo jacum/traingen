@@ -54,8 +54,10 @@ object Codecs:
   given Decoder[GroupType] = stringEnumDecoder
 
   given Encoder[FiniteDuration] = Encoder.encodeString.contramap { fd =>
-    val seconds = fd.toUnit(TimeUnit.SECONDS).toInt
-    s"$seconds seconds"
+    val totalSeconds = fd.toUnit(TimeUnit.SECONDS).toInt
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    f"$minutes%d:$seconds%02d"
   }
 
   given Decoder[FiniteDuration] = Decoder.decodeString.emap { str =>

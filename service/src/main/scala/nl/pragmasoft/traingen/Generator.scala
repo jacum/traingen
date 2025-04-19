@@ -177,6 +177,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     def calculateTotalDuration(sections: Vector[TrainingSection]): FiniteDuration =
       sections.map(s => sectionDuration(s.group, s.exercises)).fold(0.seconds)(_ + _)
 
+    @SuppressWarnings(Array("org.wartremover.warts.Var"))
     def injectFillerExercises(sections: Vector[TrainingSection]): Vector[TrainingSection] =
       val remainingDuration = profile.trainingDuration - calculateTotalDuration(sections)
       val totalExercises = Math.ceil(remainingDuration / (profile.exerciseDuration * 2)).toInt

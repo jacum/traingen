@@ -211,8 +211,8 @@ function Training() {
                                 className={`${colors[section.type as keyof typeof colors]} h-full`}
                                 style={{width: `${width}%`}}
 
-                            ><div className="text-xs font-bold">{`${section.type}`}</div>
-                                <div className="text-xs font-bold">{`${section.duration}`}</div></div>
+                            ><div className="text-xs text-black font-bold">{`${section.type}`}</div>
+                                <div className="text-xs text-black font-bold">{`${section.duration}`}</div></div>
                         );
                     })}
                 </div>
