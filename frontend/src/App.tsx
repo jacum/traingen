@@ -102,9 +102,10 @@ function Training() {
     const [comboMovements, setComboMovements] = useState<number>(6);
     const [comboBuildup, setComboBuildup] = useState<number>(3);
 
-    const {isPending, error, data, isFetching} = useQuery({
+    const {isPending, error, data, isFetching, refetch} = useQuery({
         queryKey: ['trainingData', totalMinutes, calisthenicsExercises, warmupMinutes, comboMovements,
             comboBuildup],
+        enabled: true,
         queryFn: async () => await client.GET("/user/api/training", {
             params: {
                 query: {
@@ -125,7 +126,7 @@ function Training() {
     return (
         <div>
             <Link to="/" className="back-link">← Back to Home</Link>
-            <h2>Training</h2>
+
             <div className="mb-4 flex gap-4 items-center">
                 Total Minutes: <input
                 type="number"
@@ -159,6 +160,11 @@ function Training() {
                 min="2" max="4"
                 className="border rounded px-2 py-1 w-20"
             />
+                <button
+                    onClick={() => refetch()}
+                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                    Regenerate
+                </button>
             </div>
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
