@@ -68,17 +68,34 @@ function HomePage() {
 }
 
 function Combo() {
+
     const [movementsCount, setMovementsCount] = useState<number>(6);
+    const [isDefault, setIsDefault] = useState<boolean>(true);
     const {isPending, error, data, isFetching, refetch} = useQuery({
-        queryKey: ['comboData', movementsCount],
-        queryFn: async () => await client.GET("/user/api/combo/make", {
-            params: {
-                query: {
-                    movements: movementsCount
-                }
-            },
-        }),
+        queryKey: ['comboData'],
+        enabled: isDefault,
+        queryFn: async () => {
+            const response = await client.GET("/user/api/combo/make", {
+                params: {
+                    query: {
+                        movements: movementsCount
+                    }
+                },
+            });
+            setIsDefault(false);
+            return response;
+        },
     })
+
+    const handleChange = (setter: (value: number) => void, value: number) => {
+        setter(value);
+        setIsDefault(false);
+    };
+
+    const handleRefetch = () => {
+        refetch();
+        setIsDefault(false);
+    };
 
     if (isPending || isFetching) return 'Loading...'
 
@@ -94,16 +111,14 @@ function Combo() {
                     <input
                         type="range"
                         value={movementsCount}
-                        onChange={(e) => setMovementsCount(Number(e.target.value))}
-                        min="3" max="10"
-                        className="w-40"
-                    />
+                        onChange={(e) => handleChange(setMovementsCount, Number(e.target.value))}
+                        min="4" max="10"
+                        className="w-40"/>
                     <span>{movementsCount}</span>
                 </div>
                 <button
-                    onClick={() => refetch()}
-                    className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
+                    onClick={handleRefetch}
+                    className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
                     Regenerate
                 </button>
             </div>
@@ -121,6 +136,8 @@ function Combo() {
             </div>
         </div>
     )
+
+
 }
 
 function Training() {
@@ -242,7 +259,7 @@ function Training() {
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
 
                 <div className="w-full bg-gray-100 rounded-lg mb-6 flex flex-col sm:flex-row overflow-hidden">
-                {data.data?.sections.map((section, i) => {
+                    {data.data?.sections.map((section, i) => {
                         const durationMatch = section.duration.match(/(\d+)/);
                         const seconds = durationMatch ? parseInt(durationMatch[1]) : 0;
                         const totalSeconds = data.data?.sections.reduce((acc, s) => {
@@ -263,9 +280,7 @@ function Training() {
                         return (
                             <div
                                 key={i}
-                                className={`${colors[section.type as keyof typeof colors]} h-full py-4`}
-                                style={{width: `${width}%`}}
-
+                                className={`${colors[section.type as keyof typeof colors]} h-full py-4 w-full sm:w-[${width}%]`}
                             ><div className="text-xs text-black font-bold">{`${section.type}`}</div>
                                 <div className="text-xs text-black font-bold">{`${section.duration}`}</div></div>
                         );

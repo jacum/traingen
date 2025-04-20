@@ -271,7 +271,12 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
   lazy val comboMovementsMap: Map[String, ComboMovement] = allMovements.map(e => e.id -> e).toMap
 
+  
   def generateCombo(profile: ComboProfile): ComboInstance =
+    val MinimumMovements = 4
+    val adjustedProfile = if profile.movements < MinimumMovements then
+      profile.copy(movements = MinimumMovements)
+    else profile
 
     val movementsAfter: Map[String, Vector[ComboMovementChance]] =
       allMovements
@@ -342,14 +347,18 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           )
         )
 
+    case class ComboGenerationException(message: String) extends RuntimeException(message)
+
     @tailrec
-    def leftRightBalanced(): Vector[ComboMovement] =
+    def leftRightBalanced(attempts: Int = 0): Vector[ComboMovement] =
+      if attempts >= 1000 then
+        throw ComboGenerationException("Failed to generate balanced combo after 1000 attempts")
       val combo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
       val leftRatio = combo.count(m => BodyPart.left(m.bodyPart)).toDouble / combo.size
       if leftRatio >= 0.4 && leftRatio <= 0.6 then combo
-      else leftRightBalanced()
+      else leftRightBalanced(attempts + 1)
 
-    val allCombo = leftRightBalanced()
+    val allCombo = leftRightBalanced(0)
 
     ComboInstance(
       calculateDuration[ComboMovement](allCombo, (m1, m2) => profile.transitionDuration(m1.bodyPart, m2.bodyPart)),
