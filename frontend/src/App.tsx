@@ -25,6 +25,8 @@ export default function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/combo" element={<Combo />} />
                     <Route path="/training" element={<Training />} />
+                    <Route path="/movements" element={<Movements />} />
+                    <Route path="/exercises" element={<Exercises/>}/>
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
@@ -36,9 +38,9 @@ function HomePage() {
     return (
         <div className="flex flex-col items-center p-8">
             <div className="flex flex-col gap-6 items-center mt-8">
-                <div className="bg-gray-100 rounded-lg p-6 text-center max-w-md mb-4">
-                    <p className="text-xl font-bold mb-4">This is Training Generator! </p>
-                    <p className="text-gray-700">
+                <div className="text-gray-700 bg-gray-100 rounded-lg p-6 text-center max-w-md mb-4">
+                    <p className="text-xl font-bold mb-4">Welcome to Training Generator! </p>
+                    <p>
                         <br/>Choose between a quick <b>Combo</b> generator
                         or a complete <b>Training</b> plan with warmup, calisthenics, and bag work.
                     </p>
@@ -48,6 +50,17 @@ function HomePage() {
                 </Link>
                 <Link to="/training" className="px-8 py-4 bg-blue-500 text-white text-xl font-semibold rounded-lg hover:bg-blue-600 transition-colors w-64 text-center">
                 Training
+                </Link>
+                <div className="bg-gray-100 rounded-lg p-6 text-center max-w-md mb-4">
+                <p className="text-gray-700">
+                    You can also browse all available combo <b>Movements</b> and <b>Exercises</b>.
+                </p>
+                </div>
+                <Link to="/movements" className="px-8 py-4 bg-blue-500 text-white text-xl font-semibold rounded-lg hover:bg-blue-600 transition-colors w-64 text-center block">
+                    Movements
+                </Link>
+                <Link to="/exercises" className="px-8 py-4 bg-blue-500 text-white text-xl font-semibold rounded-lg hover:bg-blue-600 transition-colors w-64 text-center block">
+                    Exercises
                 </Link>
             </div>
         </div>
@@ -113,7 +126,7 @@ function Combo() {
 function Training() {
     const [totalMinutes, setTotalMinutes] = useState<number>(45);
     const [calisthenicsExercises, setCalisthenicsExercises] = useState<number>(5);
-    const [warmupMinutes, setWarmupMinutes] = useState<number>(15);
+    const [warmupMinutes, setWarmupMinutes] = useState<number>(20);
     const [comboMovements, setComboMovements] = useState<number>(6);
     const [comboBuildup, setComboBuildup] = useState<number>(3);
     const [isDefault, setIsDefault] = useState<boolean>(true);
@@ -159,7 +172,7 @@ function Training() {
             <div className="mb-4 flex flex-col sm:flex-row gap-4">
                 <div className="flex flex-col sm:flex-row flex-wrap gap-4">
                 <div className="flex items-center gap-2">
-                        <span>Total Minutes:</span>
+                        <span>Total:</span>
                         <input
                             type="range"
                             value={totalMinutes}
@@ -167,18 +180,18 @@ function Training() {
                             min="30" max="60" step="15"
                             className="w-40"
                         />
-                        <span>{totalMinutes}</span>
+                        <span>{totalMinutes}</span> min
                     </div>
                     <div className="flex items-center gap-2">
-                        <span>Warmup Minutes:</span>
+                        <span>Warmup:</span>
                         <input
                             type="range"
                             value={warmupMinutes}
                             onChange={(e) => handleChange(setWarmupMinutes, Number(e.target.value))}
-                            min="5" max="30"
+                            min="4" max="30" step="2"
                             className="w-40"
                         />
-                        <span>{warmupMinutes}</span>
+                        <span>{warmupMinutes}</span> min
                     </div>
                     <div className="flex items-center gap-2">
                         <span>Calisthenic series:</span>
@@ -192,7 +205,7 @@ function Training() {
                         <span>{calisthenicsExercises}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span>Combo movements:</span>
+                        <span>Combo moves:</span>
                         <input
                             type="range"
                             value={comboMovements}
@@ -243,7 +256,8 @@ function Training() {
                             'Calisthenics': 'bg-green-300',
                             'Workout': 'bg-blue-300',
                             'Combo': 'bg-red-300',
-                            'Cooldown': 'bg-purple-300'
+                            'Cooldown': 'bg-purple-300',
+                            'Close' : 'bg-blue-300',
                         };
 
                         return (
@@ -311,6 +325,92 @@ function Training() {
                             </div>
                         </div>
 
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+
+function Exercises() {
+    const {isPending, error, data} = useQuery({
+        queryKey: ['libraryData'],
+        queryFn: async () => await client.GET("/user/api/library")
+    })
+
+    if (isPending) return 'Loading...'
+
+    if (error) return 'An error has occurred: ' + error.message
+
+    return (
+        <div className="p-4">
+            <Link to="/" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Home</Link>
+            <h2 className="text-2xl font-bold mb-6">Exercises</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data?.data?.map((exercise, index) => (
+                    <div key={index} className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+                        <h3 className="font-bold text-lg mb-2 text-black">{exercise.title}</h3>
+                            <div className="text-sm mb-1 text-gray-600">
+                                <span className="font-semibold">{exercise.description}</span>
+                            </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+function Movements() {
+    const {isPending, error, data} = useQuery({
+        queryKey: ['movementsData'],
+        queryFn: async () => await client.GET("/user/api/combo/movements")
+    })
+
+    if (isPending) return 'Loading...'
+
+    if (error) return 'An error has occurred: ' + error.message
+
+    return (
+        <div className="p-4">
+            <Link to="/" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Home</Link>
+            <h2 className="text-2xl font-bold mb-6">Available Combo Movements</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data?.data?.map((movement, index) => (
+                    <div key={index} className="text-black bg-white rounded-lg shadow-md p-4 border border-gray-200">
+                        <h3 className="font-bold text-lg mb-2">{movement.description}</h3>
+                        <div className="text-sm  mb-2">{movement.description}</div>
+                        <div className="text-sm mb-1"><span className="font-semibold">Body Part:</span> {movement.bodyPart}</div>
+                        {movement.picture && (
+                            <div className="text-sm mb-1"><span className="font-semibold">Picture:</span> {movement.picture}</div>
+                        )}
+                        {movement.video && (
+                            <div className="text-sm mb-1"><span className="font-semibold">Video:</span> {movement.video}</div>
+                        )}
+
+                        {movement.after && movement.after.length > 0 && (
+                            <div className="mt-3">
+                                <p className="text-sm font-semibold">Can follow:</p>
+                                <ul className="text-xs text-gray-600 ml-2">
+                                    {movement.after.map((next, i) => (
+                                        <li key={i}>
+                                            {next.id}{next.chance && ` (${next.chance * 100}%)`}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {movement.excludes && movement.excludes.length > 0 && (
+                            <div className="mt-3">
+                                <p className="text-sm font-semibold">Excludes:</p>
+                                <div className="text-xs text-gray-600 ml-2">
+                                    {movement.excludes.join(', ')}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

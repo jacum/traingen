@@ -1,5 +1,4 @@
-{
-  "elements": [
+[
     {
       "id": "free-boxing-punches-only",
       "title": "Free Boxing Punches",
@@ -53,9 +52,32 @@
       "sections": [
         "Warmup",
         "Filler"
+      ],
+      "excludes": [
+        "fast-hard-punches",
+        "fast-hard-punches-2-series"
       ]
     },
-
+    {
+      "id": "hard-punches",
+      "title": "Hard Bag Punches",
+      "description": "Hard punches against the bag",
+      "bodyParts": [
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "Warmup",
+        "Filler"
+      ],
+      "excludes": [
+        "fast-hard-punches",
+        "fast-hard-punches-2-series"
+      ],
+      "after" : [
+        "fast-punches"
+      ]
+    },
     {
       "id": "fast-hard-punches",
       "title": "Fast and Hard Punches",
@@ -67,6 +89,11 @@
       "sections": [
         "Warmup",
         "Filler"
+      ],
+      "excludes": [
+        "fast-punches",
+        "hard-punches",
+        "fast-hard-punches-2-series"
       ]
     },
     {
@@ -80,7 +107,13 @@
       "sections": [
         "Warmup",
         "Filler"
+      ],
+      "excludes": [
+        "fast-punches",
+        "hard-punches",
+        "fast-hard-punches"
       ]
+
     },
     {
       "id": "leg-kicks",
@@ -172,6 +205,9 @@
       ],
       "sections": [
         "Calisthenics"
+      ],
+      "after" : [
+        "situps"
       ]
     },
     {
@@ -208,6 +244,9 @@
         "RightArm",
         "Core"
       ],
+      "excludes" : [
+        "side-planks"
+      ],
       "sections": [
         "Calisthenics"
       ]
@@ -222,6 +261,12 @@
       ],
       "sections": [
         "Calisthenics"
+      ],
+      "after" : [
+        "squats"
+      ],
+      "excludes" : [
+        "jump-squats"
       ]
     },
     {
@@ -231,6 +276,12 @@
       "bodyParts": [
         "RightLeg",
         "LeftLeg"
+      ],
+      "after" : [
+        "squats"
+      ],
+      "excludes" : [
+        "jump-squats"
       ],
       "sections": [
         "Calisthenics"
@@ -263,7 +314,7 @@
     },
     {
       "id": "side-planks",
-      "title": "Side Planks",
+      "title": "High and Side Planks",
       "description": "High plank + side planks",
       "bodyParts": [
         "LeftArm",
@@ -318,6 +369,32 @@
       ]
     },
     {
+      "id": "mountain-climbers",
+      "title": "Mountain climbers",
+      "description": "Start in a high plank position with your hands shoulder-width apart.\nKeeping your core engaged, alternately drive your knees toward your chest in a running motion.\nKeep your back flat and hips level throughout the movement.\nMaintain a steady pace while alternating legs.",
+      "bodyParts": [
+        "Abs",
+        "Core",
+        "LeftArm",
+        "RightArm"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
+      "id": "russian-twists",
+      "title": "Russian twists",
+      "description": "Sit on the floor with your knees bent and feet flat.\nLift your feet slightly off the ground and lean back slightly, keeping your back straight.\nClasp your hands together or hold a weight in front of your chest.\nTwist your torso from side to side, touching the ground (or close to it) on each side.\nKeep your core engaged throughout the movement.",
+      "bodyParts": [
+        "Abs",
+        "Core"
+      ],
+      "sections": [
+        "Calisthenics"
+      ]
+    },
+    {
       "id": "lunges",
       "title": "Lunges",
       "description": "Step forward with one leg, lower your body until both knees are at 90 degrees, then push back to standing—repeat on the other leg.",
@@ -358,5 +435,4 @@
         "Close"
       ]
     }
-  ]
-}
+]

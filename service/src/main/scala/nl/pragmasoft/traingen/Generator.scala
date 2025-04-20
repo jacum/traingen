@@ -1,28 +1,27 @@
 package nl.pragmasoft.traingen
 
-import cats.Applicative
+import cats.{Applicative, Eq}
 import cats.implicits.catsSyntaxEq
 import cats.syntax.applicative.*
+import cats.syntax.eq.*
 import nl.pragmasoft.traingen.RandomUtils.*
-import nl.pragmasoft.traingen.SectionType.*
 import nl.pragmasoft.traingen.http.definitions.*
 import nl.pragmasoft.traingen.http.support.Presence.*
 import nl.pragmasoft.traingen.http.{Handler, Resource}
-import cats.syntax.eq.*
-import cats.Eq
+
 import scala.annotation.tailrec
 import scala.concurrent.duration.*
-import scala.util.Random
 
 object Generator:
   val StartExercise = "_start_"
   implicit val sectionTypeEq: Eq[SectionType] = Eq.fromUniversalEquals
+  implicit val elementEq: Eq[Element] = Eq.fromUniversalEquals
 
 @SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
 abstract class Generator[F[_]: Applicative] extends Handler[F]:
   import Generator.*
 
-  def allExercises: Library
+  def allExercises: Vector[Element]
 
   def getLibrary(respond: Resource.GetLibraryResponse.type)(): F[Resource.GetLibraryResponse] =
     respond.Ok(allExercises).pure[F]
@@ -46,7 +45,19 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     )
     respond.Ok(generateTraining(profile)).pure[F]
 
+  def validateTraining(training: Training, requestedDuration: FiniteDuration): Boolean =
+    Math.abs(training.duration.toSeconds - requestedDuration.toSeconds) <= 60
+
   def generateTraining(profile: TrainingProfile): Training =
+    @tailrec
+    def tryGenerateTraining(): Training =
+      val training = createTraining(profile)
+      if validateTraining(training, profile.trainingDuration) then training
+      else tryGenerateTraining()
+
+    tryGenerateTraining()
+
+  private def createTraining(profile: TrainingProfile): Training =
 
     def makeCombo =
       val allCombo = generateCombo(profile.comboProfile)
@@ -83,7 +94,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       )
 
     val elements: Map[SectionType, Vector[Element]] =
-      allExercises.elements.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
+      allExercises.flatMap(e => e.sections.map(s => s -> e)).groupMap(_._1)(_._2)
 
     def makeExercises(
         sections: Vector[TrainingSection],
@@ -99,25 +110,39 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         .flatten
         .toSet
 
+      def selectExercises(sectionType: SectionType, numberOfExercises: Int, filter: Element => Boolean = _ => true) =
+        val exercises = shuffle(elements(sectionType).filterNot(allUsedElements.contains)).filter(filter)
+
+        @tailrec
+        def select(remaining: Vector[Element], selected: Vector[Element], count: Int): Vector[Element] =
+          if count == 0 || remaining.isEmpty then selected
+          else
+            val element = pickOne(remaining)
+            val excludedIds = element.excludes.toOption.getOrElse(Vector.empty)
+            val nextRemaining = remaining.filterNot(e => e === element || excludedIds.contains(e.id))
+
+            select(nextRemaining, selected :+ element, count - 1)
+
+        select(exercises, Vector.empty, numberOfExercises)
+
       def makeCalisthenics =
-        shuffle(elements(SectionType.Calisthenics).filterNot(allUsedElements.contains))
-          .take(profile.calisthenicExercises)
+        selectExercises(SectionType.Calisthenics, profile.calisthenicExercises)
           .map(elementToSimpleExercise)
 
       def makeWarmup =
         val openingExercises = elements(SectionType.Warmup)
-          .filterNot(allUsedElements.contains)
           .map(e => (e, e.order.toOption))
           .filter(_._2.nonEmpty)
           .sortBy(_._2.getOrElse(Int.MaxValue))
           .map(_._1)
 
         val otherExercises =
-          shuffle(elements(SectionType.Warmup).filterNot(allUsedElements.contains).filter(_.order.toOption.isEmpty))
-            .take(
-              ((profile.warmupDuration - (openingExercises.length * profile.exerciseDuration * 2)) /
-                (profile.exerciseDuration * 2)).toInt
-            )
+          selectExercises(
+            SectionType.Warmup,
+            ((profile.warmupDuration - (openingExercises.length * profile.exerciseDuration * 2))
+              / (profile.exerciseDuration * 2)).toInt,
+            _.order.toOption.isEmpty
+          )
 
         (openingExercises ++ otherExercises).map(elementToSimpleExercise)
 
@@ -200,43 +225,38 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           elements(SectionType.Filler).filterNot(usedElements.contains)
         )
 
-        val exercisesPerSection = {
+        val exercisesPerSection =
           val baseAmount = totalExercises / fillerSections
           val remainder = totalExercises % fillerSections
-          (0 until fillerSections).map(i =>
-            if (i < remainder) baseAmount + 1 else baseAmount
-          ).toVector
-        }
+          (0 until fillerSections).map(i => if i < remainder then baseAmount + 1 else baseAmount).toVector
 
         var fillerIndex = 0
-        sections.map { section =>
-          if section.`type` =!= SectionType.Filler then section
-          else
-            val start = exercisesPerSection.take(fillerIndex).sum
-            val end = start + exercisesPerSection(fillerIndex)
-            fillerIndex += 1
-
-            val fillerExercises = availableFillers
-              .slice(start, end)
-              .map(elementToSimpleExercise)
-
-            if fillerExercises.isEmpty then section
+        sections
+          .map { section =>
+            if section.`type` =!= SectionType.Filler then section
             else
-              section.copy(
-                exercises = fillerExercises,
-                duration = sectionDuration(section.group, fillerExercises)
-              )
-        }.filter(section =>
-          section.`type` =!= SectionType.Filler || section.exercises.nonEmpty
-        )
+              val start = exercisesPerSection.take(fillerIndex).sum
+              val end = start + exercisesPerSection(fillerIndex)
+              fillerIndex += 1
 
+              val fillerExercises = availableFillers
+                .slice(start, end)
+                .map(elementToSimpleExercise)
+
+              if fillerExercises.isEmpty then section
+              else
+                section.copy(
+                  exercises = fillerExercises,
+                  duration = sectionDuration(section.group, fillerExercises)
+                )
+          }
+          .filter(section => section.`type` =!= SectionType.Filler || section.exercises.nonEmpty)
 
     val finalSections = injectFillerExercises(makeSections)
-
     Training(
       finalSections.map(_.duration).foldLeft(0 seconds)(_ + _),
       finalSections
-  )
+    )
 
   def getMovements(respond: Resource.GetMovementsResponse.type)(): F[Resource.GetMovementsResponse] =
     respond.Ok(allMovements).pure[F]
@@ -262,7 +282,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       allMovements.flatMap { m =>
         m.after.find(_.id === StartExercise).map(mc => ComboMovementChance(m.id, mc.chance))
       }
-    
+
     allMovements.map(_.id).foreach(k => assert(movementsAfter.contains(k), s"$k has no 'after' movements"))
 
     @SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
@@ -323,12 +343,11 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         )
 
     @tailrec
-    def leftRightBalanced(): Vector[ComboMovement] = {
+    def leftRightBalanced(): Vector[ComboMovement] =
       val combo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
       val leftRatio = combo.count(m => BodyPart.left(m.bodyPart)).toDouble / combo.size
-      if (leftRatio >= 0.4 && leftRatio <= 0.6) combo
+      if leftRatio >= 0.4 && leftRatio <= 0.6 then combo
       else leftRightBalanced()
-    }
 
     val allCombo = leftRightBalanced()
 

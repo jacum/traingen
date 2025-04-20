@@ -4,7 +4,7 @@ import cats.data.OptionT
 import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s.{Port, ipv4, port}
 import nl.pragmasoft.traingen.http.Resource
-import nl.pragmasoft.traingen.http.definitions.{ComboMovement, Library}
+import nl.pragmasoft.traingen.http.definitions.{ComboMovement, Element}
 import org.http4s.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
@@ -17,7 +17,7 @@ object Main extends IOApp:
   implicit val loggerFactory: LoggerFactory[IO] = Slf4jFactory.create
 
   private val comboGenerator = new Generator[IO]:
-    override val allExercises: Library = LibraryLoader.load("exercises.json")
+    override val allExercises: Vector[Element] = LibraryLoader.load("exercises.json")
     override val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
 
   private val httpApp: HttpApp[IO] =

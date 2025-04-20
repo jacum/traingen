@@ -1,7 +1,7 @@
 package nl.pragmasoft.traingen
 
 import cats.effect.IO
-import nl.pragmasoft.traingen.http.definitions.{ComboMovement, Library}
+import nl.pragmasoft.traingen.http.definitions.{ComboMovement, Element}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -9,7 +9,7 @@ class ComboSpec extends AnyFunSuite with Matchers:
 
   test("combos according to default rules") {
     val g = new Generator[IO]:
-      val allExercises: Library = LibraryLoader.load("exercises.json")
+      val allExercises: Vector[Element] = LibraryLoader.load("exercises.json")
       val allMovements: Vector[ComboMovement] = LibraryLoader.load("combo-movements.json")
     val p = ComboProfile.Default
     for _ <- 1 to 100000 do

@@ -94,7 +94,9 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Library'
+            type: array
+            items:
+              $ref: '#/components/schemas/Element'
 
     ComboInstance:
       description: Combo instance
@@ -185,16 +187,6 @@ components:
         chance:
           type: number
           x-scala-type: Double
-
-    Library:
-      type: object
-      required:
-        - elements
-      properties:
-        elements:
-          type: array
-          items:
-            $ref: '#/components/schemas/Element'
 
     Element:
       type: object
