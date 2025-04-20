@@ -2,6 +2,7 @@
   "elements": [
     {
       "id": "free-boxing-punches-only",
+      "title": "Free Boxing Punches",
       "description": "Free-style boxing, only punches",
       "bodyParts": [
         "LeftArm",
@@ -14,6 +15,7 @@
     },
     {
       "id": "free-kickboxing-punches-and-kicks",
+      "title": "Free Kickboxing",
       "description": "Free-style kickboxing, punches and kicks",
       "bodyParts": [
         "LeftArm",
@@ -30,6 +32,7 @@
     },
     {
       "id": "wall-sit",
+      "title": "Wall Sit",
       "description": "Wall sit",
       "bodyParts": [
         "LeftLeg",
@@ -41,6 +44,7 @@
     },
     {
       "id": "fast-punches",
+      "title": "Fast Bag Punches",
       "description": "Fast punches against the bag",
       "bodyParts": [
         "LeftArm",
@@ -54,6 +58,7 @@
 
     {
       "id": "fast-hard-punches",
+      "title": "Fast and Hard Punches",
       "description": "Fast then hard punches against the bag",
       "bodyParts": [
         "LeftArm",
@@ -66,6 +71,7 @@
     },
     {
       "id": "fast-hard-punches-2-series",
+      "title": "Fast Hard Punches Series",
       "description": "Fast then hard punches against the bag, in two series",
       "bodyParts": [
         "LeftArm",
@@ -78,6 +84,7 @@
     },
     {
       "id": "leg-kicks",
+      "title": "Leg Kicks",
       "description": "Kicks with right and left leg",
       "bodyParts": [
         "LeftLeg",
@@ -90,6 +97,7 @@
     },
     {
       "id": "leg-kicks-20-times",
+      "title": "20 Leg Kicks",
       "description": "Kicks with right and left leg, 20 times",
       "bodyParts": [
         "LeftLeg",
@@ -101,6 +109,7 @@
     },
     {
       "id": "hard-punches-pushups",
+      "title": "Punches and Pushups",
       "description": "Punches and then pushups",
       "bodyParts": [
         "LeftArm",
@@ -112,6 +121,7 @@
     },
     {
       "id": "knees-on-the-bag-high-knees",
+      "title": "Bag Knees and High Knees",
       "description": "Knees on the bag and the high knees, 2 series ",
       "bodyParts": [
         "LeftLeg",
@@ -124,6 +134,7 @@
     },
     {
       "id": "four-punches-burpee",
+      "title": "Four Punches and Burpee",
       "description": "Left right straight, left right hooks - and then a burpee",
       "bodyParts": [
         "LeftArm",
@@ -140,6 +151,7 @@
     },
     {
       "id": "jumping-jacks",
+      "title": "Jumping Jacks",
       "description": "Jumping jacks",
       "bodyParts": [
         "LeftArm",
@@ -151,6 +163,7 @@
     },
     {
       "id": "situps-hold",
+      "title": "Leg Raise Hold",
       "description": "Hold legs raised",
       "bodyParts": [
         "LeftLeg",
@@ -163,6 +176,7 @@
     },
     {
       "id": "situps-cycle",
+      "title": "Leg Raise Cycles",
       "description": "Hold legs raised, cycle movements",
       "bodyParts": [
         "LeftLeg",
@@ -175,6 +189,7 @@
     },
     {
       "id": "high-knees",
+      "title": "High Knees",
       "description": "High knees",
       "bodyParts": [
         "LeftLeg",
@@ -186,6 +201,7 @@
     },
     {
       "id": "high-to-low-plank",
+      "title": "High-Low Plank",
       "description": "High plank down to low plank up to high plank againn",
       "bodyParts": [
         "LeftArm",
@@ -198,6 +214,7 @@
     },
     {
       "id": "jump-squats",
+      "title": "Jump Squats",
       "description": "Jump squats",
       "bodyParts": [
         "RightLeg",
@@ -209,6 +226,7 @@
     },
     {
       "id": "hold-jump-squats",
+      "title": "Hold and Jump Squats",
       "description": "Hold squat, then jump, then hold ...",
       "bodyParts": [
         "RightLeg",
@@ -220,6 +238,7 @@
     },
     {
       "id": "squats",
+      "title": "Regular Squats",
       "description": "Regular squats",
       "bodyParts": [
         "RightLeg",
@@ -231,6 +250,7 @@
     },
     {
       "id": "push-ups",
+      "title": "Push Ups",
       "description": "Push ups",
       "bodyParts": [
         "LeftArm",
@@ -243,6 +263,7 @@
     },
     {
       "id": "side-planks",
+      "title": "Side Planks",
       "description": "High plank + side planks",
       "bodyParts": [
         "LeftArm",
@@ -258,6 +279,7 @@
     },
     {
       "id": "sit-ups",
+      "title": "Sit Ups",
       "description": "Lie on your back with your knees bent and feet flat on the floor, hip-width apart.\nPlace your hands behind your head, lightly supporting it, or cross your arms over your chest.\nEngage your core and lift your upper body toward your knees, keeping your back straight and avoiding pulling on your neck.\nLower yourself back down with control to the starting position.",
       "bodyParts": [
         "Abs"
@@ -268,6 +290,7 @@
     },
     {
       "id": "burpee",
+      "title": "Burpee",
       "description": "Burpee exercise: 1. Stand upright with your feet shoulder-width apart.  \n2. Squat down and place your hands on the floor in front of you.  \n3. Jump your feet back into a plank position.  \n4. Perform a push-up, keeping your body straight.  \n5. Jump your feet back to the squat position.  \n6. Explosively jump into the air, reaching your arms overhead.  \n7. Land softly and repeat.  ",
       "bodyParts": [
         "Abs",
@@ -281,6 +304,7 @@
     },
     {
       "id": "plank",
+      "title": "Plank",
       "description": "Start by lying face down on the floor.\nPlace your forearms on the ground with elbows directly under your shoulders, and keep your hands flat or clasped.\nLift your body off the floor, balancing on your forearms and toes, forming a straight line from head to heels.\nEngage your core, keep your hips level, and avoid letting your back arch or your hips sag.\nHold this position for the desired amount of time while breathing steadily.",
       "bodyParts": [
         "Abs",
@@ -295,6 +319,7 @@
     },
     {
       "id": "lunges",
+      "title": "Lunges",
       "description": "Step forward with one leg, lower your body until both knees are at 90 degrees, then push back to standing—repeat on the other leg.",
       "bodyParts": [
         "LeftLeg",
@@ -306,6 +331,7 @@
     },
     {
       "id": "2-to-8",
+      "title": "2-8 Straight Punches",
       "description": "Series of 2 to 8 left-right straignt punches",
       "bodyParts": [
         "LeftArm",
@@ -319,6 +345,7 @@
     },
     {
       "id": "free-kickboxing-punches-and-kicks-elbows-knees",
+      "title": "Full Kickboxing",
       "description": "Free-style kickboxing, punches and kicks, elbows knees",
       "bodyParts": [
         "LeftArm",

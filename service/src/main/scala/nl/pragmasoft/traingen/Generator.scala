@@ -61,12 +61,14 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       comboParts.map { ms =>
         ComboExercise(
           "combo-training",
+          "Combo training",
           profile.exerciseDuration,
           Absent,
           ms
         )
       } :+ ComboExercise(
         "combo-reps",
+        "Combo repetitions",
         allCombo.duration * profile.comboReps,
         Present(profile.comboReps),
         allCombo.movements
@@ -75,6 +77,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     def elementToSimpleExercise(e: Element): Exercise =
       SimpleExercise(
         e.id,
+        e.title,
         duration = profile.exerciseDuration,
         reps = Absent
       )
@@ -90,7 +93,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
 
       val allUsedElements = usedElements ++ sections
         .flatMap(_.exercises)
-        .collect { case SimpleExercise(id, _, _) =>
+        .collect { case SimpleExercise(id, _, _, _) =>
           elements.values.flatten.find(_.id === id)
         }
         .flatten
@@ -167,7 +170,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
           sectionDuration(group, exercises),
           exercises
         )
-        val newUsedElements = usedElements ++ exercises.collect { case SimpleExercise(id, _, _) =>
+        val newUsedElements = usedElements ++ exercises.collect { case SimpleExercise(id, _, _, _) =>
           elements.values.flatten.find(_.id === id)
         }.flatten
         (previousSections :+ newSection, newUsedElements)
@@ -187,7 +190,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
       else
         val usedElements = sections
           .flatMap(_.exercises)
-          .collect { case SimpleExercise(id, _, _) =>
+          .collect { case SimpleExercise(id, _, _, _) =>
             elements.values.flatten.find(_.id === id)
           }
           .flatten
@@ -233,7 +236,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
     Training(
       finalSections.map(_.duration).foldLeft(0 seconds)(_ + _),
       finalSections
-    )
+  )
 
   def getMovements(respond: Resource.GetMovementsResponse.type)(): F[Resource.GetMovementsResponse] =
     respond.Ok(allMovements).pure[F]
@@ -320,14 +323,14 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         )
 
     @tailrec
-    def generateBalancedCombo(): Vector[ComboMovement] = {
+    def leftRightBalanced(): Vector[ComboMovement] = {
       val combo = pickMovements(Vector(pickOneWithChance(toChanceVector(allOpeningMovements))))
       val leftRatio = combo.count(m => BodyPart.left(m.bodyPart)).toDouble / combo.size
       if (leftRatio >= 0.4 && leftRatio <= 0.6) combo
-      else generateBalancedCombo()
+      else leftRightBalanced()
     }
 
-    val allCombo = generateBalancedCombo()
+    val allCombo = leftRightBalanced()
 
     ComboInstance(
       calculateDuration[ComboMovement](allCombo, (m1, m2) => profile.transitionDuration(m1.bodyPart, m2.bodyPart)),

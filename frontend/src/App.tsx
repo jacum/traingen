@@ -36,6 +36,13 @@ function HomePage() {
     return (
         <div className="flex flex-col items-center p-8">
             <div className="flex flex-col gap-6 items-center mt-8">
+                <div className="bg-gray-100 rounded-lg p-6 text-center max-w-md mb-4">
+                    <p className="text-xl font-bold mb-4">This is Training Generator! </p>
+                    <p className="text-gray-700">
+                        <br/>Choose between a quick <b>Combo</b> generator
+                        or a complete <b>Training</b> plan with warmup, calisthenics, and bag work.
+                    </p>
+                </div>
                 <Link to="/combo" className="px-8 py-4 bg-blue-500 text-white text-xl font-semibold rounded-lg hover:bg-blue-600 transition-colors w-64 text-center block">
                 Combo
                 </Link>
@@ -67,7 +74,7 @@ function Combo() {
     return (
         <div className="p-4">
             <Link to="/" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Home</Link>
-
+            <p className="font-bold mb-4">Adjust number of combo movements or just regenerate</p>
             <div className="mb-4 flex gap-4 items-center">
                 Movements: <input
                 type="range"
@@ -235,7 +242,7 @@ function Training() {
                                         <li key={j} className="mb-4">
                                             {exercise.kind === 'combo' ? (
                                                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                                    <div className="font-semibold text-blue-700 mb-2">{exercise.ref} - {exercise.duration}</div>
+                                                    <div className="font-semibold text-blue-700 mb-2">{exercise.title} - {exercise.duration}</div>
                                                     <ul className="space-y-2">
                                                         {(exercise as components["schemas"]["ComboExercise"]).movements &&
                                                             (exercise as components["schemas"]["ComboExercise"]).movements.map(
@@ -252,18 +259,18 @@ function Training() {
                                                 </div>
                                             ) : exercise.kind === 'composite' ? (
                                                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                                    <div className="font-semibold text-green-700 mb-2">{exercise.ref} - {exercise.duration}</div>
+                                                    <div className="font-semibold text-green-700 mb-2">{exercise.title} - {exercise.duration}</div>
                                                     <ul className="space-y-2">
                                                         {(exercise as components["schemas"]["CompositeExercise"]).exercises?.map(
                                                             (e, k) => (
-                                                                <li key={k} className="text-green-600">{e.kind}: {e.ref} - {e.duration}</li>
+                                                                <li key={k} className="text-green-600">{e.kind}: {e.title} - {e.duration}</li>
                                                             ))}
                                                     </ul>
                                                 </div>
                                             ) : (
                                                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                                     <div className="font-semibold text-gray-700">
-                                                        {exercise.ref} - {exercise.duration}
+                                                        {exercise.title} - {exercise.duration}
                                                         {exercise.reps && ` (${exercise.reps} reps)`}
                                                     </div>
                                                 </div>

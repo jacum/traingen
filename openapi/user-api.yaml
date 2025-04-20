@@ -200,11 +200,14 @@ components:
       type: object
       required:
         - id
+        - title
         - description
         - bodyParts
         - sections
       properties:
         id:
+          type: string
+        title:
           type: string
         description:
           type: string
@@ -278,6 +281,7 @@ components:
       type: object
       required:
         - kind
+        - title
         - ref
         - duration
       properties:
@@ -286,6 +290,9 @@ components:
           type: string
         ref:
           description: Reference to library with detailed description
+          type: string
+        title:
+          description: Short description
           type: string
         duration:
           description: Duration of exercise
