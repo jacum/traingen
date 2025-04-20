@@ -75,32 +75,37 @@ function Combo() {
         <div className="p-4">
             <Link to="/" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Home</Link>
             <p className="font-bold mb-4">Adjust number of combo movements or just regenerate</p>
-            <div className="mb-4 flex gap-4 items-center">
-                Movements: <input
-                type="range"
-                value={movementsCount}
-                onChange={(e) => setMovementsCount(Number(e.target.value))}
-                min="3" max="10"
-                className="w-40"
-            />
-                <span>{movementsCount}</span>
+            <div className="mb-4 flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <span>Movements:</span>
+                    <input
+                        type="range"
+                        value={movementsCount}
+                        onChange={(e) => setMovementsCount(Number(e.target.value))}
+                        min="3" max="10"
+                        className="w-40"
+                    />
+                    <span>{movementsCount}</span>
+                </div>
                 <button
                     onClick={() => refetch()}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                     Regenerate
                 </button>
             </div>
 
-            <table className="w-full border-collapse border">
-                <tbody key="movements">
-                {data.data?.movements.map((m, i) =>
-                    <tr key={i}>
-                        <td key={i} className="border p-2">{m.description}</td>
-                    </tr>
-                )}
-                </tbody>
-            </table>
+            <div className="overflow-x-auto">
+                <table className="w-full border-collapse border">
+                    <tbody key="movements">
+                    {data.data?.movements.map((m, i) =>
+                        <tr key={i}>
+                            <td key={i} className="border p-4 break-words">{m.description}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
@@ -151,39 +156,64 @@ function Training() {
         <div>
             <Link to="/" className="back-link">← Back to Home</Link>
 
-            <div className="mb-4 flex gap-4 items-center">
-                Total Minutes: <input
-                type="number"
-                value={totalMinutes}
-                onChange={(e) => handleChange(setTotalMinutes, Number(e.target.value))}
-                min="30" max="120"
-                className="border rounded px-2 py-1 w-20"
-            />
-                Warmup Minutes: <input
-                type="number"
-                value={warmupMinutes}
-                onChange={(e) => handleChange(setWarmupMinutes, Number(e.target.value))}
-                min="5" max="30"
-                className="border rounded px-2 py-1 w-20"
-            /> Calisthenic series: <input
-                type="number"
-                value={calisthenicsExercises}
-                onChange={(e) => handleChange(setCalisthenicsExercises, Number(e.target.value))}
-                min="3" max="7"
-                className="border rounded px-2 py-1 w-20"
-            /> Combo movements: <input
-                type="number"
-                value={comboMovements}
-                onChange={(e) => handleChange(setComboMovements, Number(e.target.value))}
-                min="4" max="8"
-                className="border rounded px-2 py-1 w-20"
-            /> Combo buildup: <input
-                type="number"
-                value={comboBuildup}
-                onChange={(e) => handleChange(setComboBuildup, Number(e.target.value))}
-                min="2" max="4"
-                className="border rounded px-2 py-1 w-20"
-            />
+            <div className="mb-4 flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                        <span>Total Minutes:</span>
+                        <input
+                            type="range"
+                            value={totalMinutes}
+                            onChange={(e) => handleChange(setTotalMinutes, Number(e.target.value))}
+                            min="30" max="60" step="15"
+                            className="w-40"
+                        />
+                        <span>{totalMinutes}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span>Warmup Minutes:</span>
+                        <input
+                            type="range"
+                            value={warmupMinutes}
+                            onChange={(e) => handleChange(setWarmupMinutes, Number(e.target.value))}
+                            min="5" max="30"
+                            className="w-40"
+                        />
+                        <span>{warmupMinutes}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span>Calisthenic series:</span>
+                        <input
+                            type="range"
+                            value={calisthenicsExercises}
+                            onChange={(e) => handleChange(setCalisthenicsExercises, Number(e.target.value))}
+                            min="3" max="7"
+                            className="w-40"
+                        />
+                        <span>{calisthenicsExercises}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span>Combo movements:</span>
+                        <input
+                            type="range"
+                            value={comboMovements}
+                            onChange={(e) => handleChange(setComboMovements, Number(e.target.value))}
+                            min="4" max="10"
+                            className="w-40"
+                        />
+                        <span>{comboMovements}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span>Combo buildup:</span>
+                        <input
+                            type="range"
+                            value={comboBuildup}
+                            onChange={(e) => handleChange(setComboBuildup, Number(e.target.value))}
+                            min="2" max="4"
+                            className="w-40"
+                        />
+                        <span>{comboBuildup}</span>
+                    </div>
+                </div>
                 <button
                     onClick={handleRefetch}
                     disabled={isDefault}
@@ -198,8 +228,8 @@ function Training() {
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
 
-                <div className="w-full bg-gray-100 rounded-lg mb-6 flex overflow-hidden">
-                    {data.data?.sections.map((section, i) => {
+                <div className="w-full bg-gray-100 rounded-lg mb-6 flex flex-col sm:flex-row overflow-hidden">
+                {data.data?.sections.map((section, i) => {
                         const durationMatch = section.duration.match(/(\d+)/);
                         const seconds = durationMatch ? parseInt(durationMatch[1]) : 0;
                         const totalSeconds = data.data?.sections.reduce((acc, s) => {
@@ -230,15 +260,15 @@ function Training() {
 
                 {data.data?.sections.map((section, i) => (
                     <div key={i} className="section mb-8 p-6 bg-gray-50 rounded-lg shadow-sm">
-                        <div className="flex">
-                            <div className="w-1/2">
-                                <h4 className="text-lg font-semibold text-black mb-2">{section.type}</h4>
+                        <div className="flex flex-col sm:flex-row">
+                            <div className="w-full sm:w-1/2 mb-4 sm:mb-0">
+                            <h4 className="text-lg font-semibold text-black mb-2">{section.type}</h4>
                                 <p className="text-gray-600 mb-1">{section.duration}</p>
                                 <p className="text-gray-600 mb-3">Group: {section.group}</p>
                             </div>
-                            <div className="w-1/2">
-                                <ul>
-                                    {section.exercises.map((exercise, j) => (
+                            <div className="w-full sm:w-1/2">
+                                <ul className="space-y-4">
+                                {section.exercises.map((exercise, j) => (
                                         <li key={j} className="mb-4">
                                             {exercise.kind === 'combo' ? (
                                                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
