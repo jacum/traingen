@@ -17,7 +17,7 @@ object Generator:
   implicit val sectionTypeEq: Eq[SectionType] = Eq.fromUniversalEquals
   implicit val elementEq: Eq[Element] = Eq.fromUniversalEquals
 
-@SuppressWarnings(Array("org.wartremover.warts.SeqApply"))
+@SuppressWarnings(Array("org.wartremover.warts.SeqApply", "org.wartremover.warts.Throw"))
 abstract class Generator[F[_]: Applicative] extends Handler[F]:
   import Generator.*
 
