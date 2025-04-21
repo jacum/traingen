@@ -480,7 +480,6 @@ function PlayTraining() {
             <div className="text-black max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold mb-2">{currentSection?.type}</h2>
-                    <div className="text-sm text-gray-600">{currentSection?.duration}</div>
                 </div>
 
                 <div className="mb-6">
@@ -509,6 +508,43 @@ function PlayTraining() {
                         />
                     </div>
 
+                    <div className="mt-6 border-t pt-4">
+                        <h4 className="text-lg font-semibold mb-2">Coming up next:</h4>
+                        <div className="space-y-2">
+                            {/* Show next exercise in current section */}
+                            {currentSection?.exercises[currentExerciseIndex + 1] && (
+                                <div className="p-2 bg-gray-50 rounded">
+                                    <span className="font-medium">{currentSection.exercises[currentExerciseIndex +
+                                    1].title}</span>
+                                    <span className="text-gray-500 ml-2">({currentSection.exercises[currentExerciseIndex +
+                                    1].duration})</span>
+                                </div>
+                            )}
+
+                            {/* If we're at the end of current section, show first exercise of next section */}
+                            {currentExerciseIndex === currentSection?.exercises.length - 1 &&
+                                currentSectionIndex < sections.length - 1 && (
+                                    <>
+                                        <div className="text-center mb-6">
+                                            <h2 className="text-2xl font-bold mb-2">{sections[currentSectionIndex +
+                                            1].type}</h2>
+                                        </div>
+                                        {sections[currentSectionIndex + 1].exercises[0] && (
+                                            <div className="p-2 bg-gray-100 rounded">
+                                                <span className="font-medium">{sections[currentSectionIndex +
+                                                1].exercises[0].title}</span>
+                                                <span className="text-gray-500 ml-2">({sections[currentSectionIndex +
+                                                1].exercises[0].duration})</span>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                        </div>
+                    </div>
+
+
+                    </div>
+
                 </div>
 
                 <div className="flex justify-center gap-4">
@@ -528,7 +564,6 @@ function PlayTraining() {
                     </button>
                 </div>
             </div>
-        </div>
     );
 }
 
