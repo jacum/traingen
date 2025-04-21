@@ -1,8 +1,8 @@
 import './App.css'
 import './index.css'
 
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
-import {useState} from 'react'
+import {BrowserRouter, Routes, Route, Link, Navigate, useLocation} from 'react-router-dom'
+import {useEffect, useState} from 'react'
 import { paths, components } from './services/user-api.ts'
 import createClient from "openapi-fetch";
 
@@ -27,6 +27,7 @@ export default function App() {
                     <Route path="/training" element={<Training />} />
                     <Route path="/movements" element={<Movements />} />
                     <Route path="/exercises" element={<Exercises/>}/>
+                    <Route path="/training/play" element={<PlayTraining/>}/>
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
@@ -163,7 +164,6 @@ function Training() {
                     }
                 },
             });
-            setIsDefault(false);
             return response;
         },
     })
@@ -211,7 +211,7 @@ function Training() {
                         <span>{warmupMinutes}</span> min
                     </div>
                     <div className="flex items-center gap-2">
-                        <span>Calisthenic series:</span>
+                        <span>Calisthenics:</span>
                         <input
                             type="range"
                             value={calisthenicsExercises}
@@ -246,14 +246,15 @@ function Training() {
                 </div>
                 <button
                     onClick={handleRefetch}
-                    disabled={isDefault}
-                    className={`ml-4 px-4 py-2 text-white rounded transition-colors ${
-                        isDefault
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-blue-500 hover:bg-blue-600'
-                    }`}>
+                    className="ml-4 px-4 py-2 text-white rounded transition-colors bg-blue-500 hover:bg-blue-600">
                     Regenerate
                 </button>
+                                    <Link
+                    to="/training/play"
+                    state={{ sections: data.data?.sections }}
+                    className="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
+                    Play ▶
+                                    </Link>
             </div>
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
@@ -375,6 +376,107 @@ function Exercises() {
             </div>
         </div>
     )
+}
+
+function PlayTraining() {
+    const location = useLocation();
+    const sections = location.state?.sections || [];
+    const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+    const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (isPlaying && timeLeft > 0) {
+            timer = setInterval(() => {
+                setTimeLeft(time => time - 1);
+            }, 1000);
+        } else if (timeLeft === 0) {
+            handleNext();
+        }
+        return () => clearInterval(timer);
+    }, [isPlaying, timeLeft]);
+
+    const handleNext = () => {
+        const currentSection = sections[currentSectionIndex];
+        if (!currentSection) return;
+
+        if (currentExerciseIndex < currentSection.exercises.length - 1) {
+            setCurrentExerciseIndex(currentExerciseIndex + 1);
+            const nextExercise = currentSection.exercises[currentExerciseIndex + 1];
+            setTimeLeft(parseTime(nextExercise.duration));
+        } else if (currentSectionIndex < sections.length - 1) {
+            setCurrentSectionIndex(currentSectionIndex + 1);
+            setCurrentExerciseIndex(0);
+            const nextSection = sections[currentSectionIndex + 1];
+            if (nextSection.exercises.length > 0) {
+                setTimeLeft(parseTime(nextSection.exercises[0].duration));
+            }
+        } else {
+            setIsPlaying(false);
+        }
+    };
+
+    const parseTime = (duration: string): number => {
+        const match = duration.match(/(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+    };
+
+    const formatTime = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const currentSection = sections[currentSectionIndex];
+    const currentExercise = currentSection?.exercises[currentExerciseIndex];
+
+    return (
+        <div className="p-4">
+            <Link to="/training" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Training</Link>
+
+            <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+                <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold mb-2">{currentSection?.type}</h2>
+                    <div className="text-4xl font-mono">{formatTime(timeLeft)}</div>
+                </div>
+
+                <div className="mb-6">
+                    {currentExercise && (
+                        <div className="text-center">
+                            <h3 className="text-xl mb-2">{currentExercise.title}</h3>
+                            {currentExercise.kind === 'combo' && (
+                                <ul className="text-left list-disc pl-6">
+                                    {(currentExercise as components["schemas"]["ComboExercise"]).movements?.map(
+                                        (m, i) => (
+                                            <li key={i}>{m.description}</li>
+                                        ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex justify-center gap-4">
+                    <button
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className={`px-6 py-2 rounded ${
+                            isPlaying ? 'bg-yellow-500' : 'bg-green-500'
+                        } text-white`}
+                    >
+                        {isPlaying ? '⏸ Pause' : '▶ Play'}
+                    </button>
+                    <button
+                        onClick={handleNext}
+                        className="px-6 py-2 bg-blue-500 text-white rounded"
+                    >
+                        ⏭ Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function Movements() {
