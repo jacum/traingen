@@ -143,7 +143,7 @@ function Combo() {
 function Training() {
     const [totalMinutes, setTotalMinutes] = useState<number>(45);
     const [calisthenicsExercises, setCalisthenicsExercises] = useState<number>(5);
-    const [warmupMinutes, setWarmupMinutes] = useState<number>(20);
+    const [warmupMinutes, setWarmupMinutes] = useState<number>(16);
     const [comboMovements, setComboMovements] = useState<number>(6);
     const [comboBuildup, setComboBuildup] = useState<number>(3);
     const [isDefault, setIsDefault] = useState<boolean>(true);

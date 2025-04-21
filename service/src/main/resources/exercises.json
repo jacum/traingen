@@ -137,6 +137,7 @@
         "RightLeg"
       ],
       "sections": [
+        "Warmup",
         "Filler"
       ]
     },
@@ -149,6 +150,7 @@
         "RightArm"
       ],
       "sections": [
+        "Warmup",
         "Filler"
       ]
     },
