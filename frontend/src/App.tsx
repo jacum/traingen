@@ -147,11 +147,9 @@ function Training() {
     const [warmupMinutes, setWarmupMinutes] = useState<number>(16);
     const [comboMovements, setComboMovements] = useState<number>(6);
     const [comboBuildup, setComboBuildup] = useState<number>(3);
-    const [isDefault, setIsDefault] = useState<boolean>(true);
 
     const {isPending, error, data, isFetching, refetch} = useQuery({
         queryKey: ['trainingData'],
-        enabled: isDefault,
         queryFn: async () => {
             const response = await client.GET("/user/api/training", {
                 params: {
@@ -168,14 +166,20 @@ function Training() {
         },
     })
 
+    const [sections, setSections] = useState<components["schemas"]["TrainingSection"][]>([]);
+
+    useEffect(() => {
+        if (data?.data?.sections) {
+            setSections(data.data.sections);
+        }
+    }, [data]);
+
     const handleChange = (setter: (value: number) => void, value: number) => {
         setter(value);
-        setIsDefault(false);
     };
 
     const handleRefetch = () => {
         refetch();
-        setIsDefault(false);
     };
 
     if (isPending || isFetching) return 'Loading...'
@@ -249,18 +253,16 @@ function Training() {
                     className="ml-4 px-4 py-2 text-white rounded transition-colors bg-blue-500 hover:bg-blue-600">
                     Regenerate
                 </button>
-                                    <Link
+                <Link
                     to="/training/play"
-                    state={{ sections: data.data?.sections }}
-                    className="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
-                    Play ▶
-                                    </Link>
+                    state={{ sections: sections }}
+                    className="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">▶ Play</Link>
             </div>
             <div className="p-4">
                 <h3 className="text-xl font-bold mb-4">{data.data?.duration}</h3>
 
                 <div className="w-full bg-gray-100 rounded-lg mb-6 flex flex-col sm:flex-row overflow-hidden">
-                    {data.data?.sections.map((section, i) => {
+                    {sections.map((section, i) => {
                         const durationMatch = section.duration.match(/(\d+)/);
                         const seconds = durationMatch ? parseInt(durationMatch[1]) : 0;
                         const totalSeconds = data.data?.sections.reduce((acc, s) => {
@@ -378,28 +380,76 @@ function Exercises() {
     )
 }
 
+function Say(text: string) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';  // Explicitly set language to English-US
+
+    function setVoiceAndSpeak() {
+        const voices = speechSynthesis.getVoices();
+
+        // Select English voice explicitly:
+        const englishVoice = voices.find(voice => voice.lang.startsWith('en'));
+
+        if (englishVoice) {
+            utterance.voice = englishVoice;
+        }
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        console.log(utterance);
+        speechSynthesis.speak(utterance);
+    }
+
+    if (speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+    } else {
+        setVoiceAndSpeak();
+    }
+}
+
+
 function PlayTraining() {
+
+    const parseTime = (duration: string): number => {
+        const [minutes, seconds] = duration.split(':').map(Number);
+        return (minutes * 60) + seconds;
+    };
+
+    const formatTime = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
     const location = useLocation();
     const sections = location.state?.sections || [];
+
     const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(parseTime(sections[0].exercises[0].duration));
     const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (isPlaying && timeLeft > 0) {
             timer = setInterval(() => {
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    Say(timeLeft.toString());
+                }
                 setTimeLeft(time => time - 1);
             }, 1000);
         } else if (timeLeft === 0) {
             handleNext();
         }
-        return () => clearInterval(timer);
+        return () => {
+            clearInterval(timer);
+            // console.log("cancelled")
+            // synth.cancel();
+        };
     }, [isPlaying, timeLeft]);
 
     const handleNext = () => {
         const currentSection = sections[currentSectionIndex];
+
         if (!currentSection) return;
 
         if (currentExerciseIndex < currentSection.exercises.length - 1) {
@@ -410,6 +460,7 @@ function PlayTraining() {
             setCurrentSectionIndex(currentSectionIndex + 1);
             setCurrentExerciseIndex(0);
             const nextSection = sections[currentSectionIndex + 1];
+            Say(currentExercise.title);
             if (nextSection.exercises.length > 0) {
                 setTimeLeft(parseTime(nextSection.exercises[0].duration));
             }
@@ -418,16 +469,6 @@ function PlayTraining() {
         }
     };
 
-    const parseTime = (duration: string): number => {
-        const match = duration.match(/(\d+)/);
-        return match ? parseInt(match[1]) : 0;
-    };
-
-    const formatTime = (seconds: number): string => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
 
     const currentSection = sections[currentSectionIndex];
     const currentExercise = currentSection?.exercises[currentExerciseIndex];
@@ -436,10 +477,10 @@ function PlayTraining() {
         <div className="p-4">
             <Link to="/training" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Training</Link>
 
-            <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+            <div className="text-black max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold mb-2">{currentSection?.type}</h2>
-                    <div className="text-4xl font-mono">{formatTime(timeLeft)}</div>
+                    <div className="text-sm text-gray-600">{currentSection?.duration}</div>
                 </div>
 
                 <div className="mb-6">
@@ -456,6 +497,18 @@ function PlayTraining() {
                             )}
                         </div>
                     )}
+                    <div className="text-2xl">{formatTime(timeLeft)}</div>
+
+                    <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
+
+                        <div
+                            className="bg-blue-500 h-4 rounded-full transition-all duration-1000"
+                            style={{
+                                width: `${(timeLeft / parseTime(currentExercise?.duration || '0:00')) * 100}%`
+                            }}
+                        />
+                    </div>
+
                 </div>
 
                 <div className="flex justify-center gap-4">
