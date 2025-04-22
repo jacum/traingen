@@ -228,7 +228,7 @@
     {
       "id": "high-knees",
       "title": "High Knees",
-      "description": "High knees",
+      "description": "Run in place while lifting your knees as high as possible, ideally to hip level. Keep a steady, quick pace while driving your arms in a running motion for balance and intensity.",
       "bodyParts": [
         "LeftLeg",
         "RightLeg"
@@ -240,7 +240,7 @@
     {
       "id": "high-to-low-plank",
       "title": "High-Low Plank",
-      "description": "High plank down to low plank up to high plank againn",
+      "description": "High plank down to low plank up to high plank again while maintaining a straight body position",
       "bodyParts": [
         "LeftArm",
         "RightArm",
@@ -274,7 +274,7 @@
     {
       "id": "hold-jump-squats",
       "title": "Hold and Jump Squats",
-      "description": "Hold squat, then jump, then hold ...",
+      "description": "Alternate between holding a deep squat position for a few seconds and performing explosive squat jumps. For the hold: maintain proper squat form with thighs parallel to ground. For jumps: explosively jump up while extending arms overhead, land softly back into squat position.",
       "bodyParts": [
         "RightLeg",
         "LeftLeg"
@@ -292,7 +292,7 @@
     {
       "id": "squats",
       "title": "Regular Squats",
-      "description": "Regular squats",
+      "description": "Stand with feet shoulder-width apart.\nLower your body by bending your knees and pushing your hips back, as if sitting in a chair.\nKeep your chest up and back straight.\nLower until your thighs are parallel to the ground (or as low as you can go with proper form).\nPush through your heels to return to the starting position.",
       "bodyParts": [
         "RightLeg",
         "LeftLeg"
@@ -304,7 +304,7 @@
     {
       "id": "push-ups",
       "title": "Push Ups",
-      "description": "Push ups",
+      "description": "Start in a high plank position with hands slightly wider than shoulder-width apart.\nKeeping your body in a straight line from head to heels, lower your chest toward the ground by bending your elbows.\nPush back up to the starting position.\nKeep your core engaged throughout the movement.\nRepeat the movement at a steady pace.",
       "bodyParts": [
         "LeftArm",
         "RightArm",

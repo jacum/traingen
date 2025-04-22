@@ -79,7 +79,7 @@ abstract class Generator[F[_]: Applicative] extends Handler[F]:
         )
       } :+ ComboExercise(
         "combo-reps",
-        "Combo repetitions",
+        s"Combo: ${profile.comboReps} repetitions",
         allCombo.duration * profile.comboReps,
         Present(profile.comboReps),
         allCombo.movements

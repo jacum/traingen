@@ -10,7 +10,13 @@ calisthenics.
 
 Frontend:
 
-`cd frontend; npm run dev`
+`cd frontend` 
+
+To generate OpenAPI client:
+`npm run openapi`
+
+To run development server:
+`npm run dev`
 
 Backend:
 

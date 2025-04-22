@@ -142,6 +142,7 @@ function Combo() {
 }
 
 function Training() {
+    const location = useLocation();
     const [totalMinutes, setTotalMinutes] = useState<number>(45);
     const [calisthenicsExercises, setCalisthenicsExercises] = useState<number>(5);
     const [warmupMinutes, setWarmupMinutes] = useState<number>(16);
@@ -150,6 +151,7 @@ function Training() {
 
     const {isPending, error, data, isFetching, refetch} = useQuery({
         queryKey: ['trainingData'],
+        enabled: !location.state?.sections,
         queryFn: async () => {
             const response = await client.GET("/user/api/training", {
                 params: {
@@ -166,13 +168,15 @@ function Training() {
         },
     })
 
-    const [sections, setSections] = useState<components["schemas"]["TrainingSection"][]>([]);
+    const [sections, setSections] = useState<components["schemas"]["TrainingSection"][]>(
+        location.state?.sections || []
+    );
 
     useEffect(() => {
-        if (data?.data?.sections) {
+        if (data?.data?.sections && !location.state?.sections) {
             setSections(data.data.sections);
         }
-    }, [data]);
+    }, [data, location.state?.sections]);
 
     const handleChange = (setter: (value: number) => void, value: number) => {
         setter(value);
@@ -475,7 +479,12 @@ function PlayTraining() {
 
     return (
         <div className="p-4">
-            <Link to="/training" className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">← Back to Training</Link>
+            <Link
+                to="/training"
+                state={{sections: sections}}
+                className="back-link mb-4 inline-block text-blue-500 hover:text-blue-700">
+                ← Back to Training
+            </Link>
 
             <div className="text-black max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="text-center mb-6">
